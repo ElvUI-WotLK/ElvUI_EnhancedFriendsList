@@ -3,8 +3,6 @@ local E, L, V, P, G = unpack(ElvUI);
 local EP = LibStub("LibElvUIPlugin-1.0");
 local mod = E:NewModule("FriendsListColor", "AceHook-3.0");
 
-G.friendsListColor = {};
-
 local syntaxes={
 	{"N", "C", "L", "Z", "S", "O"},
 	{"NC", "CC", "LC", "ZC", "SC", "OC"},
@@ -108,12 +106,12 @@ function mod:FriendsList_Update()
 			if(friend and friend.buttonType == FRIENDS_BUTTON_TYPE_WOW) then
 				tmp = form("$NC, {D!LEVEL} $LD $OD", name, class, level, zone or "", status or "", note or "");
 				friend.name:SetText(tmp)
-				E.global.friendsListColor[name] = {level, class, zone}
+				ElvCharacterDB.friendsListColor[name] = {level, class, zone}
 			end
 		else
 			if(friend and friend.buttonType == FRIENDS_BUTTON_TYPE_WOW) then
-				if(E.global.friendsListColor[name]) then
-					level, class, zone =  unpack(E.global.friendsListColor[name]);
+				if(ElvCharacterDB.friendsListColor[name]) then
+					level, class, zone =  unpack(ElvCharacterDB.friendsListColor[name]);
 					tmp = form("$NC, {D!LEVEL} $LD $C", name, class, level, zone or "", status or "", note or "");
 					
 					friend.name:SetText(tmp);
@@ -126,7 +124,12 @@ end
 
 function mod:Initialize()
 	EP:RegisterPlugin(addonName, getOptions);
-
+	
+	ElvCharacterDB.friendsListColor = {};
+	if(E.global.friendsListColor) then
+		ElvCharacterDB.friendsListColor = E.global.friendsListColor;
+		E.global.friendsListColor = nil;
+	end
 	self:SecureHook("FriendsList_Update", "FriendsList_Update")
 	self:SecureHook("FriendsFramePendingScrollFrame_AdjustScroll", "FriendsList_Update")
 end
