@@ -106,12 +106,12 @@ function mod:FriendsList_Update()
 			if(friend and friend.buttonType == FRIENDS_BUTTON_TYPE_WOW) then
 				tmp = form("$NC, {D!LEVEL} $LD $OD", name, class, level, zone or "", status or "", note or "");
 				friend.name:SetText(tmp)
-				ElvCharacterDB.friendsListColor[name] = {level, class, zone}
+				ElvCharacterDB.FriendsListColor[name] = {level, class, zone}
 			end
 		else
 			if(friend and friend.buttonType == FRIENDS_BUTTON_TYPE_WOW) then
-				if(ElvCharacterDB.friendsListColor[name]) then
-					level, class, zone =  unpack(ElvCharacterDB.friendsListColor[name]);
+				if(ElvCharacterDB.FriendsListColor[name]) then
+					level, class, zone =  unpack(ElvCharacterDB.FriendsListColor[name]);
 					tmp = form("$NC, {D!LEVEL} $LD $C", name, class, level, zone or "", status or "", note or "");
 					
 					friend.name:SetText(tmp);
@@ -124,10 +124,12 @@ end
 
 function mod:Initialize()
 	EP:RegisterPlugin(addonName, getOptions);
-	
-	ElvCharacterDB.friendsListColor = {};
+
+	if(not ElvCharacterDB.FriendsListColor) then
+		ElvCharacterDB.FriendsListColor = {};
+	end
 	if(E.global.friendsListColor) then
-		ElvCharacterDB.friendsListColor = E.global.friendsListColor;
+		ElvCharacterDB.FriendsListColor = E.global.friendsListColor;
 		E.global.friendsListColor = nil;
 	end
 	self:SecureHook("FriendsList_Update", "FriendsList_Update")
