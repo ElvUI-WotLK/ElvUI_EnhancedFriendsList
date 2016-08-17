@@ -18,26 +18,23 @@ for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do locclasses[v] = k; end
 
 function mod:FriendsList_Update()
 	if(GetNumFriends() < 1) then return; end
+	local name, level, class, zone, connected, status, note, color;
 	for i = 1, GetNumFriends() do
 		local friend = _G["FriendsFrameFriendsScrollFrameButton" .. i];
-		if(friend.id) then
-			local name, level, class, zone, connected, status, note = GetFriendInfo(friend.id);
+		if(friend.id and friend.buttonType == FRIENDS_BUTTON_TYPE_WOW) then
+			name, level, class, zone, connected, status, note = GetFriendInfo(friend.id);
+			color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[locclasses[class]] or RAID_CLASS_COLORS[locclasses[class]];
 			if(connected) then
-				if(friend and friend.buttonType == FRIENDS_BUTTON_TYPE_WOW) then
-					local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[locclasses[class]] or RAID_CLASS_COLORS[locclasses[class]];
-					--local diffColor = GetQuestDifficultyColor(level);
-					--print(format("%s%s|r", E:RGBToHex(diffColor.r, diffColor.g, diffColor.b), name));
-					friend.name:SetText(format("%s%s|r", E:RGBToHex(color.r, color.g, color.b), name) .. ", " .. format(FRIENDS_LEVEL_TEMPLATE, level, class));
-					ElvCharacterDB.FriendsListColor[name] = {level, class, zone};
-				end
+				--local diffColor = GetQuestDifficultyColor(level);
+				--print(format("%s%s|r", E:RGBToHex(diffColor.r, diffColor.g, diffColor.b), name));
+				friend.name:SetText(format("%s%s|r", E:RGBToHex(color.r, color.g, color.b), name) .. ", " .. format(FRIENDS_LEVEL_TEMPLATE, level, class));
+				ElvCharacterDB.FriendsListColor[name] = {level, class, zone};
 			else
-				if(friend and friend.buttonType == FRIENDS_BUTTON_TYPE_WOW) then
-					if(ElvCharacterDB.FriendsListColor[name]) then
-						level, class, zone = unpack(ElvCharacterDB.FriendsListColor[name]);
-						local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[locclasses[class]] or RAID_CLASS_COLORS[locclasses[class]];
-						friend.name:SetText(format("%s%s|r", E:RGBToHex(color.r, color.g, color.b), name) .. ", " .. format(FRIENDS_LEVEL_TEMPLATE, level, class));
-						friend.info:SetText(zone);
-					end
+				if(ElvCharacterDB.FriendsListColor[name]) then
+					level, class, zone = unpack(ElvCharacterDB.FriendsListColor[name])
+					color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[locclasses[class]] or RAID_CLASS_COLORS[locclasses[class]];
+					friend.name:SetText(format("%s%s|r", E:RGBToHex(color.r, color.g, color.b), name) .. ", " .. format(FRIENDS_LEVEL_TEMPLATE, level, class));
+					friend.info:SetText(zone);
 				end
 			end
 		end
