@@ -17,6 +17,9 @@ local LOCALIZED_CLASS_NAMES_FEMALE = LOCALIZED_CLASS_NAMES_FEMALE;
 local LOCALIZED_CLASS_NAMES_MALE = LOCALIZED_CLASS_NAMES_MALE;
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS;
 
+local locale = GetLocale();
+local test = locale == "ruRU" and ", %s%d-го уровня" or locale == "deDE" and ", %sStufe %d" or ", %sLevel $d";
+
 local locclasses = {};
 for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do locclasses[v] = k; end
 for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do locclasses[v] = k; end
@@ -29,16 +32,16 @@ function mod:FriendsList_Update()
 		if(friend.id and friend.buttonType == FRIENDS_BUTTON_TYPE_WOW) then
 			name, level, class, zone, connected, status, note = GetFriendInfo(friend.id);
 			color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[locclasses[class]] or RAID_CLASS_COLORS[locclasses[class]];
-			--diffColor = GetQuestDifficultyColor(level);
+			diffColor = GetQuestDifficultyColor(level);
 			if(connected) then
-				friend.name:SetText(format("%s%s|r", E:RGBToHex(color.r, color.g, color.b), name) .. ", " .. format(FRIENDS_LEVEL_TEMPLATE, level, class));
+				friend.name:SetText(format("%s%s|r", E:RGBToHex(color.r, color.g, color.b), name) .. format(test, E:RGBToHex(diffColor.r, diffColor.g, diffColor.b), level));
 				ElvCharacterDB.FriendsListColor[name] = {level, class, zone};
 			else
 				if(ElvCharacterDB.FriendsListColor[name]) then
 					level, class, zone = unpack(ElvCharacterDB.FriendsListColor[name]);
 					color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[locclasses[class]] or RAID_CLASS_COLORS[locclasses[class]];
-					--diffColor = GetQuestDifficultyColor(level);
-					friend.name:SetText(format("%s%s|r", E:RGBToHex(color.r*0.50, color.g*0.50, color.b*0.50), name) .. ", " .. format(FRIENDS_LEVEL_TEMPLATE, level, class));
+					diffColor = GetQuestDifficultyColor(level);
+					friend.name:SetText(format("%s%s|r", E:RGBToHex(color.r*0.5, color.g*0.5, color.b*0.5), name) .. format(test, E:RGBToHex(diffColor.r*0.5, diffColor.g*0.5, diffColor.b*0.5), level));
 					friend.info:SetText(zone);
 				end
 			end
