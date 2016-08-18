@@ -3,6 +3,10 @@ local E, L, V, P, G = unpack(ElvUI);
 local EP = LibStub("LibElvUIPlugin-1.0");
 local mod = E:NewModule("FriendsListColor", "AceHook-3.0");
 
+local _G = _G;
+local unpack, pairs = unpack, pairs;
+local format = string.format;
+
 local GetFriendInfo = GetFriendInfo;
 local GetNumFriends = GetNumFriends;
 local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS;
@@ -31,7 +35,7 @@ function mod:FriendsList_Update()
 				ElvCharacterDB.FriendsListColor[name] = {level, class, zone};
 			else
 				if(ElvCharacterDB.FriendsListColor[name]) then
-					level, class, zone = unpack(ElvCharacterDB.FriendsListColor[name])
+					level, class, zone = unpack(ElvCharacterDB.FriendsListColor[name]);
 					color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[locclasses[class]] or RAID_CLASS_COLORS[locclasses[class]];
 					friend.name:SetText(format("%s%s|r", E:RGBToHex(color.r, color.g, color.b), name) .. ", " .. format(FRIENDS_LEVEL_TEMPLATE, level, class));
 					friend.info:SetText(zone);
@@ -51,8 +55,8 @@ function mod:Initialize()
 		ElvCharacterDB.FriendsListColor = E.global.friendsListColor;
 		E.global.friendsListColor = nil;
 	end
-	self:SecureHook("FriendsList_Update", "FriendsList_Update")
-	self:SecureHook("FriendsFramePendingScrollFrame_AdjustScroll", "FriendsList_Update")
+	FriendsFrameFriendsScrollFrame:HookScript("OnVerticalScroll", function() mod:FriendsList_Update(); end);
+	self:SecureHook("FriendsList_Update", "FriendsList_Update");
 end
 
 E:RegisterModule(mod:GetName());
