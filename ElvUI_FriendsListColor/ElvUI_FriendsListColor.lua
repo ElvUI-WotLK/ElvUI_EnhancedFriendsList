@@ -1,10 +1,11 @@
 local addonName = ...;
 local E, L, V, P, G = unpack(ElvUI);
 local EP = LibStub("LibElvUIPlugin-1.0");
-local mod = E:NewModule("FriendsListColor", "AceHook-3.0");
+local mod = E:NewModule("FriendsListColor", "AceHook-3.0", "AceEvent-3.0", "AceTimer-3.0");
 
 local _G = _G;
 local unpack, pairs = unpack, pairs;
+local gsub, gmatch = string.gsub, string.gmatch;
 
 local GetFriendInfo = GetFriendInfo;
 local GetNumFriends = GetNumFriends;
@@ -25,6 +26,11 @@ locale == "deDE" and "%s%s|r, %sStufe %d" or
 
 textFormat = classIcon .. textFormat;
 
+local textFormat2 = 
+locale == "ruRU" and "%s, |cff999999Не всети (%s)|r" or 
+locale == "deDE" and "%s, |cff999999Offline (%s)|r" or -- need translete
+"%s, |cff999999Offline (%s)|r";
+
 local locclasses = {};
 for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do locclasses[v] = k; end
 for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do locclasses[v] = k; end
@@ -42,18 +48,40 @@ function mod:FriendsList_Update()
 				color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[locclasses[class]] or RAID_CLASS_COLORS[locclasses[class]];
 				diffColor = GetQuestDifficultyColor(level);
 				friend.name:SetFormattedText(textFormat, (left + 0.024)*64, (right - 0.02)*64, (top + 0.018)*64, (bottom - 0.02)*64, E:RGBToHex(color.r, color.g, color.b), name, E:RGBToHex(diffColor.r, diffColor.g, diffColor.b), level);
-				ElvCharacterDB.FriendsListColor[name] = {level, locclasses[class], zone, GetTime()};
+				ElvCharacterDB.FriendsListColor[name] = {level, locclasses[class], zone};
 			else
 				if(ElvCharacterDB.FriendsListColor[name]) then
-					level, class, zone = unpack(ElvCharacterDB.FriendsListColor[name]);
+					level, class, zone, offlineTime = unpack(ElvCharacterDB.FriendsListColor[name]);
 					left, right, top, bottom = unpack(CLASS_ICON_TCOORDS[class]);
 					color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class];
 					diffColor = GetQuestDifficultyColor(level);
 					friend.name:SetFormattedText(textFormat, (left + 0.024)*64, (right - 0.02)*64, (top + 0.018)*64, (bottom - 0.02)*64, E:RGBToHex(color.r*0.5, color.g*0.5, color.b*0.5), name, E:RGBToHex(diffColor.r*0.5, diffColor.g*0.5, diffColor.b*0.5), level);
-					friend.info:SetText(zone);
+					if(offlineTime) then
+						friend.info:SetFormattedText(textFormat2, zone, SecondsToTime(time() - offlineTime, false, nil, 1));
+					else
+						friend.info:SetText(zone);
+					end
 				end
 			end
 		end
+	end
+end
+
+function mod:IsOfflineFriends()
+	local toastType = BNToastFrame.toastType;
+	local toastData = BNToastFrame.toastData;
+	if(ElvCharacterDB.FriendsListColor[toastData] and toastType == 2) then
+		ElvCharacterDB.FriendsListColor[toastData][4] = time();
+		self:FriendsList_Update();
+	end
+end
+
+local pattern = ERR_FRIEND_OFFLINE_S:gsub("%%s", "(%.+)"):gsub("%[", "%%["):gsub("%]","%%]");
+function mod:CHAT_MSG_SYSTEM(event, arg1, ...)
+	local name = arg1:gmatch(pattern)();
+	if(name and ElvCharacterDB.FriendsListColor[name]) then
+		ElvCharacterDB.FriendsListColor[name][4] = time();
+		self:FriendsList_Update();
 	end
 end
 
@@ -76,6 +104,14 @@ function mod:Initialize()
 	end
 	FriendsFrameFriendsScrollFrame:HookScript("OnVerticalScroll", function() mod:FriendsList_Update(); end);
 	self:SecureHook("FriendsList_Update", "FriendsList_Update");
+
+	if(IsAddOnLoaded("BNetToast")) then
+		BNToastFrame:HookScript("OnShow", function(self)
+			mod:ScheduleTimer("IsOfflineFriends", 0.5);
+		end);
+	else
+		self:RegisterEvent("CHAT_MSG_SYSTEM");
+	end
 end
 
 E:RegisterModule(mod:GetName());
