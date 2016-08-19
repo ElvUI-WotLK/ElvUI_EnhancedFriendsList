@@ -44,11 +44,13 @@ function mod:FriendsList_Update()
 		if(friend.id and friend.buttonType == FRIENDS_BUTTON_TYPE_WOW) then
 			name, level, class, zone, connected, status, note = GetFriendInfo(friend.id);
 			if(connected) then
-				left, right, top, bottom = unpack(CLASS_ICON_TCOORDS[locclasses[class]]);
-				color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[locclasses[class]] or RAID_CLASS_COLORS[locclasses[class]];
-				diffColor = GetQuestDifficultyColor(level);
-				friend.name:SetFormattedText(textFormat, (left + 0.024)*64, (right - 0.02)*64, (top + 0.018)*64, (bottom - 0.02)*64, E:RGBToHex(color.r, color.g, color.b), name, E:RGBToHex(diffColor.r, diffColor.g, diffColor.b), level);
-				ElvCharacterDB.FriendsListColor[name] = {level, locclasses[class], zone};
+				if(name) then
+					left, right, top, bottom = unpack(CLASS_ICON_TCOORDS[locclasses[class]]);
+					color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[locclasses[class]] or RAID_CLASS_COLORS[locclasses[class]];
+					diffColor = GetQuestDifficultyColor(level);
+					friend.name:SetFormattedText(textFormat, (left + 0.024)*64, (right - 0.02)*64, (top + 0.018)*64, (bottom - 0.02)*64, E:RGBToHex(color.r, color.g, color.b), name, E:RGBToHex(diffColor.r, diffColor.g, diffColor.b), level);
+					ElvCharacterDB.FriendsListColor[name] = {level, locclasses[class], zone};
+				end
 			else
 				if(ElvCharacterDB.FriendsListColor[name]) then
 					level, class, zone, offlineTime = unpack(ElvCharacterDB.FriendsListColor[name]);
