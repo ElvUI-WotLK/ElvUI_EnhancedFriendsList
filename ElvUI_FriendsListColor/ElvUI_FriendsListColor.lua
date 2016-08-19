@@ -20,9 +20,9 @@ local RAID_CLASS_COLORS = RAID_CLASS_COLORS;
 local classIcon = "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:20:20:-1:0:64:64:%d:%d:%d:%d|t";
 local locale = GetLocale();
 local textFormat = 
-locale == "ruRU" and "%s%s|r, %s%d-го уровня" or 
-locale == "deDE" and "%s%s|r, %sStufe %d" or 
-"%s%s|r, %sLevel %d";
+locale == "ruRU" and "%s%s|r, %s%d|r-го уровня" or 
+locale == "deDE" and "%s%s|r, Stufe %s%d|r" or 
+"%s%s|r, Level %s%d|r";
 
 textFormat = classIcon .. textFormat;
 
