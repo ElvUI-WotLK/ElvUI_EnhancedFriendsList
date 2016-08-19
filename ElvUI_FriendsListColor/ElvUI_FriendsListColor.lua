@@ -17,7 +17,7 @@ local LOCALIZED_CLASS_NAMES_FEMALE = LOCALIZED_CLASS_NAMES_FEMALE;
 local LOCALIZED_CLASS_NAMES_MALE = LOCALIZED_CLASS_NAMES_MALE;
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS;
 
-local classIcon = "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:20:20:-1:0:64:64:%d:%d:%d:%d|t";
+local classIcon = "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:16:16:-1:1:64:64:%d:%d:%d:%d|t";
 local locale = GetLocale();
 local textFormat = 
 locale == "ruRU" and "%s%s|r, %s%d|r-го уровня" or 
