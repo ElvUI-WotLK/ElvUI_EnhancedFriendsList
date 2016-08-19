@@ -16,7 +16,7 @@ local LOCALIZED_CLASS_NAMES_MALE = LOCALIZED_CLASS_NAMES_MALE;
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS;
 
 local locale = GetLocale();
-local textFormat = locale == "ruRU" and "%s%s|r, %s%s-го уровня" or locale == "deDE" and "%s%s|r, %sStufe %s" or "%s%s|r, %sLevel $s";
+local textFormat = locale == "ruRU" and "%s%s|r, %s%s-го уровня" or locale == "deDE" and "%s%s|r, %sStufe %s" or "%s%s|r, %sLevel %s";
 
 local locclasses = {};
 for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do locclasses[v] = k; end
