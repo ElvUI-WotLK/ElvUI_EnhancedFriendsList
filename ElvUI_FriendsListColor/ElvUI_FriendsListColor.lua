@@ -59,7 +59,7 @@ function mod:FriendsList_Update()
 					diffColor = GetQuestDifficultyColor(level);
 					friend.name:SetFormattedText(textFormat, (left + 0.024)*64, (right - 0.02)*64, (top + 0.018)*64, (bottom - 0.02)*64, E:RGBToHex(color.r*0.5, color.g*0.5, color.b*0.5), name, E:RGBToHex(diffColor.r*0.5, diffColor.g*0.5, diffColor.b*0.5), level);
 					if(offlineTime) then
-						friend.info:SetFormattedText(textFormat2, zone, SecondsToTime(time() - offlineTime, false, nil, 1));
+						friend.info:SetFormattedText(textFormat2, zone, SecondsToTime(time() - offlineTime, false, nil, 3));
 					else
 						friend.info:SetText(zone);
 					end
