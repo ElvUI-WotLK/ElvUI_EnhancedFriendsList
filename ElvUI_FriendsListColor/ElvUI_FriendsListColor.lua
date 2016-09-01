@@ -28,8 +28,8 @@ textFormat = classIcon .. textFormat;
 
 local textFormat2 = 
 locale == "ruRU" and "%s, |cff999999Не всети (%s)|r" or 
-locale == "deDE" and "%s, |cff999999Offline (%s)|r" or -- need translete
-"%s, |cff999999Offline (%s)|r";
+locale == "deDE" and "%s, |cff999999Last Seen %s|r" or -- need translete
+"%s, |cff999999Last Seen %s|r";
 
 local locclasses = {};
 for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do locclasses[v] = k; end
