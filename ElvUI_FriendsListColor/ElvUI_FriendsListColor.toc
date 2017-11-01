@@ -1,7 +1,0 @@
-## Interface: 30300
-## Author: Bunny
-## Version: 1.0
-## Title: |cffA11313E|r|cffC4C4C4lvUI|r |cffA11313F|r|cffC4C4C4riends|r |cffA11313L|r|cffC4C4C4ist|r |cffA11313C|r|cffC4C4C4olor|r
-## RequiredDeps: ElvUI
-
-ElvUI_FriendsListColor.lua
