@@ -122,12 +122,6 @@ function EFL:InsertOptions()
 							["D3"] = "Diablo 3"
 						},
 						set = function(info, value) E.db.enhanceFriendsList.statusIcons = value EFL:EnhanceFriends() EFL:FriendDropdownUpdate() end
-					},
-					hideNotesIcon = {
-						order = 4,
-						type = "toggle",
-						name = L["Hide Note Icon"],
-						set = function(info, value) E.db.enhanceFriendsList.hideNotesIcon = value EFL:EnhanceFriends() end
 					}
 				}
 			},
