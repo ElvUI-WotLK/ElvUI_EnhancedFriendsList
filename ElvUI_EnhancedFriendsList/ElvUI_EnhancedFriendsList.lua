@@ -653,7 +653,7 @@ function EFL:FriendListUpdate()
 		E.global.EnhancedFriendsList_Data = nil
 	end
 
-	hooksecurefunc("HybridScrollFrame_Update", EFL.EnhanceFriends)
+	hooksecurefunc("DynamicScrollFrame_Update", EFL.EnhanceFriends)
 	hooksecurefunc("FriendsList_Update", EFL.EnhanceFriends)
 	hooksecurefunc("FriendsFrameStatusDropDown_Update", EFL.FriendDropdownUpdate)
 end
