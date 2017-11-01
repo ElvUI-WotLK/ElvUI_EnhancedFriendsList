@@ -260,7 +260,7 @@ function EFL:InsertOptions()
 						type = "toggle",
 						name = L["Short Level"],
 						set = function(info, value) E.db.enhanceFriendsList.offlineShortLevel = value EFL:EnhanceFriends() end,
-						disabled = function() return E.db.enhanceFriendsList.offlineHideLevel end
+						disabled = function() return E.db.enhanceFriendsList.hideLevelText or E.db.enhanceFriendsList.offlineHideLevel end
 					},
 					offlineShowZone = {
 						order = 7,
