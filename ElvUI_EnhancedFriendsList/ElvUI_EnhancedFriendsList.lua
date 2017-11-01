@@ -47,6 +47,7 @@ P["enhanceFriendsList"] = {
 	["showBackground"] = true,
 	["showStatusIcon"] = true,
 	["statusIcons"] = "Square",
+	["hideLevelText"] = false,
 	-- Online
 	["enhancedName"] = true,
 	["colorizeNameOnly"] = false,
@@ -122,6 +123,12 @@ function EFL:InsertOptions()
 							["D3"] = "Diablo 3"
 						},
 						set = function(info, value) E.db.enhanceFriendsList.statusIcons = value EFL:EnhanceFriends() EFL:FriendDropdownUpdate() end
+					},
+					hideLevelText = {
+						order = 4,
+						type = "toggle",
+						name = L["Hide Level or L Text"],
+						set = function(info, value) E.db.enhanceFriendsList.hideLevelText = value EFL:EnhanceFriends() end
 					}
 				}
 			},
@@ -205,7 +212,8 @@ function EFL:InsertOptions()
 						order = 9,
 						type = "toggle",
 						name = L["Short Level"],
-						set = function(info, value) E.db.enhanceFriendsList.shortLevel = value EFL:EnhanceFriends() end
+						set = function(info, value) E.db.enhanceFriendsList.shortLevel = value EFL:EnhanceFriends() end,
+						disabled = function() return E.db.enhanceFriendsList.hideLevelText end
 					}
 				}
 			},
@@ -448,44 +456,92 @@ function EFL:EnhanceFriends()
 					if db.colorizeNameOnly then
 						if db.hideClass then
 							if db.levelColor then
-								nameText = format("%s%s|r|cffffffff - %s|r %s%s|r", ClassColorCode(class), name, shortLevel, diff, level)
+								if db.hideLevelText then
+									nameText = format("%s%s|r|cffffffff - %s%s|r", ClassColorCode(class), name, diff, level)
+								else
+									nameText = format("%s%s|r|cffffffff - %s|r %s%s|r", ClassColorCode(class), name, shortLevel, diff, level)
+								end
 							else
-								nameText = format("%s%s|r|cffffffff - %s %s|r", ClassColorCode(class), name, shortLevel, level)
+								if db.hideLevelText then
+									nameText = format("%s%s|r|cffffffff - %s|r", ClassColorCode(class), name, level)
+								else
+									nameText = format("%s%s|r|cffffffff - %s %s|r", ClassColorCode(class), name, shortLevel, level)
+								end
 							end
 						else
 							if db.levelColor then
-								nameText = format("%s%s|r|cffffffff - %s|r %s%s|r|cffffffff %s|r", ClassColorCode(class), name, shortLevel, diff, level, class)
+								if db.hideLevelText then
+									nameText = format("%s%s|r|cffffffff - %s%s|r|cffffffff %s|r", ClassColorCode(class), name, diff, level, class)
+								else
+									nameText = format("%s%s|r|cffffffff - %s|r %s%s|r|cffffffff %s|r", ClassColorCode(class), name, shortLevel, diff, level, class)
+								end
 							else
-								nameText = format("%s%s|r|cffffffff - %s %s %s|r", ClassColorCode(class), name, shortLevel, level, class)
+								if db.hideLevelText then
+									nameText = format("%s%s|r|cffffffff - %s %s|r", ClassColorCode(class), name, level, class)
+								else
+									nameText = format("%s%s|r|cffffffff - %s %s %s|r", ClassColorCode(class), name, shortLevel, level, class)
+								end
 							end
 						end
 					else
 						if db.hideClass then
 							if db.levelColor then
-								nameText = format("%s%s - %s %s%s|r", ClassColorCode(class), name, shortLevel, diff, level)
+								if db.hideLevelText then
+									nameText = format("%s%s - %s%s|r", ClassColorCode(class), name, diff, level)
+								else
+									nameText = format("%s%s - %s %s%s|r", ClassColorCode(class), name, shortLevel, diff, level)
+								end
 							else
-								nameText = format("%s%s - %s %s", ClassColorCode(class), name, shortLevel, level)
+								if db.hideLevelText then
+									nameText = format("%s%s - %s", ClassColorCode(class), name, level)
+								else
+									nameText = format("%s%s - %s %s", ClassColorCode(class), name, shortLevel, level)
+								end
 							end
 						else
 							if db.levelColor then
-								nameText = format("%s%s - %s %s%s|r %s%s", ClassColorCode(class), name, shortLevel, diff, level, ClassColorCode(class), class)
+								if db.hideLevelText then
+									nameText = format("%s%s - %s%s|r %s%s", ClassColorCode(class), name, diff, level, ClassColorCode(class), class)
+								else
+									nameText = format("%s%s - %s %s%s|r %s%s", ClassColorCode(class), name, shortLevel, diff, level, ClassColorCode(class), class)
+								end
 							else
-								nameText = format("%s%s - %s %s %s", ClassColorCode(class), name, shortLevel, level, class)
+								if db.hideLevelText then
+									nameText = format("%s%s - %s %s", ClassColorCode(class), name, level, class)
+								else
+									nameText = format("%s%s - %s %s %s", ClassColorCode(class), name, shortLevel, level, class)
+								end
 							end
 						end
 					end
 				else
 					if db.hideClass then
 						if db.levelColor then
-							nameText = format("%s, %s %s%s|r", name, shortLevel, diff, level)
+							if db.hideLevelText then
+								nameText = format("%s, %s%s|r", name, diff, level)
+							else
+								nameText = format("%s, %s %s%s|r", name, shortLevel, diff, level)
+							end
 						else
-							nameText = format("%s, %s %s", name, shortLevel, level)
+							if db.hideLevelText then
+								nameText = format("%s, %s", name, level)
+							else
+								nameText = format("%s, %s %s", name, shortLevel, level)
+							end
 						end
 					else
 						if db.levelColor then
-							nameText = format("%s, %s %s%s|r %s", name, shortLevel, diff, level, class)
+							if db.hideLevelText then
+								nameText = format("%s, %s%s|r %s", name, diff, level, class)
+							else
+								nameText = format("%s, %s %s%s|r %s", name, shortLevel, diff, level, class)
+							end
 						else
-							nameText = format("%s, %s %s %s", name, shortLevel, level, class)
+							if db.hideLevelText then
+								nameText = format("%s, %s %s", name, level, class)
+							else
+								nameText = format("%s, %s %s %s", name, shortLevel, level, class)
+							end
 						end
 					end
 				end
@@ -521,13 +577,21 @@ function EFL:EnhanceFriends()
 								if db.offlineHideLevel then
 									nameText = format("%s%s", OfflineColorCode(class), name)
 								else
-									nameText = format("%s%s|r - %s %s%s", OfflineColorCode(class), name, offlineShortLevel, offlineDiffColor, level)
+									if db.hideLevelText then
+										nameText = format("%s%s|r - %s%s", OfflineColorCode(class), name, offlineDiffColor, level)
+									else
+										nameText = format("%s%s|r - %s %s%s", OfflineColorCode(class), name, offlineShortLevel, offlineDiffColor, level)
+									end
 								end
 							else
 								if db.offlineHideLevel then
 									nameText = format("%s%s|r - %s", OfflineColorCode(class), name, class)
 								else
-									nameText = format("%s%s|r - %s %s%s|r %s", OfflineColorCode(class), name, offlineShortLevel, offlineDiffColor, level, class)
+									if db.hideLevelText then
+										nameText = format("%s%s|r - %s%s|r %s", OfflineColorCode(class), name, offlineDiffColor, level, class)
+									else
+										nameText = format("%s%s|r - %s %s%s|r %s", OfflineColorCode(class), name, offlineShortLevel, offlineDiffColor, level, class)
+									end
 								end
 							end
 						else
@@ -535,13 +599,21 @@ function EFL:EnhanceFriends()
 								if db.offlineHideLevel then
 									nameText = format("%s%s", OfflineColorCode(class), name)
 								else
-									nameText = format("%s%s - %s %s%s", OfflineColorCode(class), name, offlineShortLevel, offlineDiffColor, level)
+									if db.hideLevelText then
+										nameText = format("%s%s - %s%s", OfflineColorCode(class), name, offlineDiffColor, level)
+									else
+										nameText = format("%s%s - %s %s%s", OfflineColorCode(class), name, offlineShortLevel, offlineDiffColor, level)
+									end
 								end
 							else
 								if db.offlineHideLevel then
 									nameText = format("%s%s - %s", OfflineColorCode(class), name, class)
 								else
-									nameText = format("%s%s - %s %s%s|r %s%s", OfflineColorCode(class), name, offlineShortLevel, offlineDiffColor, level, OfflineColorCode(class), class)
+									if db.hideLevelText then
+										nameText = format("%s%s - %s%s|r %s%s", OfflineColorCode(class), name, offlineDiffColor, level, OfflineColorCode(class), class)
+									else
+										nameText = format("%s%s - %s %s%s|r %s%s", OfflineColorCode(class), name, offlineShortLevel, offlineDiffColor, level, OfflineColorCode(class), class)
+									end
 								end
 							end
 						end
@@ -550,13 +622,21 @@ function EFL:EnhanceFriends()
 							if db.offlineHideLevel then
 								nameText = name
 							else
-								nameText = format("%s - %s %s%s", name, offlineShortLevel, offlineDiffColor, level)
+								if db.hideLevelText then
+									nameText = format("%s - %s%s", name, offlineDiffColor, level)
+								else
+									nameText = format("%s - %s %s%s", name, offlineShortLevel, offlineDiffColor, level)
+								end
 							end
 						else
 							if db.offlineHideLevel then
 								nameText = format("%s - %s", name, class)
 							else
-								nameText = format("%s - %s %s%s|r %s", name, offlineShortLevel, offlineDiffColor, level, class)
+								if db.hideLevelText then
+									nameText = format("%s - %s%s|r %s", name, offlineDiffColor, level, class)
+								else
+									nameText = format("%s - %s %s%s|r %s", name, offlineShortLevel, offlineDiffColor, level, class)
+								end
 							end
 						end
 					end
