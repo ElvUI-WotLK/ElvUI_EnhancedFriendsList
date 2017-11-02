@@ -342,28 +342,6 @@ function EFL:InsertOptions()
 	}
 end
 
-local function ClassColorCode(class)
-	for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
-		if class == v then
-			class = k
-		end
-	end
-	if Locale ~= "enUS" then
-		for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
-			if class == v then
-				class = k
-			end
-		end
-	end
-
-	local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
-	if not color then
-		return format("|cFF%02x%02x%02x", 255, 255, 255)
-	else
-		return format("|cFF%02x%02x%02x", color.r*255, color.g*255, color.b*255)
-	end
-end
-
 local function OfflineColorCode(class)
 	for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
 		if class == v then
@@ -402,25 +380,57 @@ local function timeDiff(t2, t1)
 	return diff
 end
 
+local function GetLevelDiffColorHex(level)
+	if level ~= 0 then
+		local color = GetQuestDifficultyColor(level)
+		return E:RGBToHex(color.r, color.g, color.b)
+	else
+		return "|cFFFFFFFF"
+	end
+end
+
+local function GetClassColorHex(class)
+	for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
+		if class == v then
+			class = k
+		end
+	end
+	if Locale ~= "enUS" then
+		for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
+			if class == v then
+				class = k
+			end
+		end
+	end
+
+	local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
+	if class then
+		return E:RGBToHex(color.r, color.g, color.b)
+	else
+		return ""
+	end
+end
+
 function EFL:EnhanceFriends()
 	local db = E.db.enhanceFriendsList
+	local shortLevel = db.shortLevel and L["SHORT_LEVEL"] or LEVEL
+
 	local scrollFrame = FriendsFrameFriendsScrollFrame
 	local buttons = scrollFrame.buttons
 	local numButtons = #buttons
+	local button
 	local name, level, class, area, connected, status
 	local playerZone = GetRealZoneText()
-
+	
 	for i = 1, numButtons do
+		button = buttons[i]
 		local Cooperate = false
-		local button = buttons[i]
-		local nameText, nameColor, infoText, broadcastText
+		local nameText, nameColor, levelText, infoText
+		local classHex
 
 		if button.buttonType == FRIENDS_BUTTON_TYPE_WOW then
 			name, level, class, area, connected, status = GetFriendInfo(button.id)
 			if not name then return end
-
-			local diff = level ~= 0 and format("|cff%02x%02x%02x", GetQuestDifficultyColor(level).r * 255, GetQuestDifficultyColor(level).g * 255, GetQuestDifficultyColor(level).b * 255) or "|cFFFFFFFF"
-			local shortLevel = db.shortLevel and L["SHORT_LEVEL"] or LEVEL
 
 			if db.showBackground then
 				button.background:Show()
@@ -438,7 +448,6 @@ function EFL:EnhanceFriends()
 			end
 
 			infoText = area
-			broadcastText = nil
 
 			if connected then
 				button.status:SetTexture(StatusIcons[db.statusIcons][(status == CHAT_FLAG_DND and "DND" or status == CHAT_FLAG_AFK and "AFK" or "Online")])
@@ -452,101 +461,20 @@ function EFL:EnhanceFriends()
 				ElvCharacterDB.EnhancedFriendsList_Data[name].area = area
 				ElvCharacterDB.EnhancedFriendsList_Data[name].lastSeen = format("%i", time())
 
+				classHex = db.enhancedName and not db.colorizeNameOnly and GetClassColorHex(class) or ""
+
+				name = db.enhancedName and GetClassColorHex(class)..name.."|r" or name
+				levelText = db.hideLevelText and "" or (classHex..shortLevel.."|r" or shortLevel)
+				level = db.levelColor and GetLevelDiffColorHex(level)..level.."|r" or (classHex..level.."|r" or level)
+				class = db.hideClass and "" or (classHex..class.."|r" or class)
+
 				if db.enhancedName then
-					if db.colorizeNameOnly then
-						if db.hideClass then
-							if db.levelColor then
-								if db.hideLevelText then
-									nameText = format("%s%s|r|cffffffff - %s%s|r", ClassColorCode(class), name, diff, level)
-								else
-									nameText = format("%s%s|r|cffffffff - %s|r %s%s|r", ClassColorCode(class), name, shortLevel, diff, level)
-								end
-							else
-								if db.hideLevelText then
-									nameText = format("%s%s|r|cffffffff - %s|r", ClassColorCode(class), name, level)
-								else
-									nameText = format("%s%s|r|cffffffff - %s %s|r", ClassColorCode(class), name, shortLevel, level)
-								end
-							end
-						else
-							if db.levelColor then
-								if db.hideLevelText then
-									nameText = format("%s%s|r|cffffffff - %s%s|r|cffffffff %s|r", ClassColorCode(class), name, diff, level, class)
-								else
-									nameText = format("%s%s|r|cffffffff - %s|r %s%s|r|cffffffff %s|r", ClassColorCode(class), name, shortLevel, diff, level, class)
-								end
-							else
-								if db.hideLevelText then
-									nameText = format("%s%s|r|cffffffff - %s %s|r", ClassColorCode(class), name, level, class)
-								else
-									nameText = format("%s%s|r|cffffffff - %s %s %s|r", ClassColorCode(class), name, shortLevel, level, class)
-								end
-							end
-						end
-					else
-						if db.hideClass then
-							if db.levelColor then
-								if db.hideLevelText then
-									nameText = format("%s%s - %s%s|r", ClassColorCode(class), name, diff, level)
-								else
-									nameText = format("%s%s - %s %s%s|r", ClassColorCode(class), name, shortLevel, diff, level)
-								end
-							else
-								if db.hideLevelText then
-									nameText = format("%s%s - %s", ClassColorCode(class), name, level)
-								else
-									nameText = format("%s%s - %s %s", ClassColorCode(class), name, shortLevel, level)
-								end
-							end
-						else
-							if db.levelColor then
-								if db.hideLevelText then
-									nameText = format("%s%s - %s%s|r %s%s", ClassColorCode(class), name, diff, level, ClassColorCode(class), class)
-								else
-									nameText = format("%s%s - %s %s%s|r %s%s", ClassColorCode(class), name, shortLevel, diff, level, ClassColorCode(class), class)
-								end
-							else
-								if db.hideLevelText then
-									nameText = format("%s%s - %s %s", ClassColorCode(class), name, level, class)
-								else
-									nameText = format("%s%s - %s %s %s", ClassColorCode(class), name, shortLevel, level, class)
-								end
-							end
-						end
-					end
+					nameText = format("%s - %s %s %s", name, levelText, level, class)
 				else
-					if db.hideClass then
-						if db.levelColor then
-							if db.hideLevelText then
-								nameText = format("%s, %s%s|r", name, diff, level)
-							else
-								nameText = format("%s, %s %s%s|r", name, shortLevel, diff, level)
-							end
-						else
-							if db.hideLevelText then
-								nameText = format("%s, %s", name, level)
-							else
-								nameText = format("%s, %s %s", name, shortLevel, level)
-							end
-						end
-					else
-						if db.levelColor then
-							if db.hideLevelText then
-								nameText = format("%s, %s%s|r %s", name, diff, level, class)
-							else
-								nameText = format("%s, %s %s%s|r %s", name, shortLevel, diff, level, class)
-							end
-						else
-							if db.hideLevelText then
-								nameText = format("%s, %s %s", name, level, class)
-							else
-								nameText = format("%s, %s %s %s", name, shortLevel, level, class)
-							end
-						end
-					end
+					nameText = format("%s, %s %s %s", name, levelText, level, class)
 				end
 
-				nameColor = FRIENDS_WOW_NAME_COLOR
+				nameColor = db.enhancedName and HIGHLIGHT_FONT_COLOR or FRIENDS_WOW_NAME_COLOR
 				Cooperate = true
 			else
 				button.status:SetTexture(StatusIcons[db.statusIcons].Offline)
