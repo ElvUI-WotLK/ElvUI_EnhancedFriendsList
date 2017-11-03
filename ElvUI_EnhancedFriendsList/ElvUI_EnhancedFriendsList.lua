@@ -146,7 +146,7 @@ function EFL:InsertOptions()
 							nameFontOutline = {
 								order = 3,
 								type = "select",
-								name = L["Name Font Outline"],
+								name = L["Font Outline"],
 								desc = L["Set the font outline."],
 								values = {
 									["NONE"] = NONE,
