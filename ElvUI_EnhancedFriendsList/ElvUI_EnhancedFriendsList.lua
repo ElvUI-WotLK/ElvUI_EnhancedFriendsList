@@ -403,8 +403,10 @@ local function GetClassColorHex(class, offline)
 end
 
 local function HexToRGB(hex)
+	if not hex then return nil end
+
 	local rhex, ghex, bhex = string.sub(hex, 5, 6), string.sub(hex, 7, 8), string.sub(hex, 9, 10)
-	return tonumber(rhex, 16)/225, tonumber(ghex, 16)/225, tonumber(bhex, 16)/225
+	return {r = tonumber(rhex, 16)/225, g = tonumber(ghex, 16)/225, b = tonumber(bhex, 16)/225}
 end
 
 function EFL:EnhanceFriends()
@@ -423,7 +425,7 @@ function EFL:EnhanceFriends()
 	for i = 1, numButtons do
 		button = buttons[i]
 		local Cooperate = false
-		local colorHex, r, g, b, nameText, nameColor, infoText
+		local colorHex, nameText, nameColor, infoText
 
 		if button.buttonType == FRIENDS_BUTTON_TYPE_WOW then
 			name, level, class, area, connected, status = GetFriendInfo(button.id)
@@ -465,16 +467,7 @@ function EFL:EnhanceFriends()
 
 				nameText = enhancedName..(db.enhancedName and " - " or ", ")..enhancedLevel..enhancedClass
 
-				if db.enhancedName then
-					if db.colorizeNameOnly then
-						nameColor = HIGHLIGHT_FONT_COLOR
-					else
-						r, g, b = HexToRGB(colorHex)
-						nameColor = {r = r, g = g, b = b}
-					end
-				else
-					nameColor = FRIENDS_WOW_NAME_COLOR
-				end
+				nameColor = db.enhancedName and (db.colorizeNameOnly and HIGHLIGHT_FONT_COLOR or HexToRGB(colorHex)) or FRIENDS_WOW_NAME_COLOR
 
 				Cooperate = true
 			else
@@ -501,20 +494,7 @@ function EFL:EnhanceFriends()
 					infoText = area
 				end
 
-				if db.offlineEnhancedName then
-					if db.offlineColorizeNameOnly then
-						nameColor = FRIENDS_GRAY_COLOR
-					else
-						if colorHex then
-							r, g, b = HexToRGB(colorHex)
-							nameColor = {r = r, g = g, b = b}
-						else
-							nameColor = FRIENDS_GRAY_COLOR
-						end
-					end
-				else
-					nameColor = FRIENDS_GRAY_COLOR
-				end
+				nameColor = db.offlineEnhancedName and not db.offlineColorizeNameOnly and (HexToRGB(colorHex) or FRIENDS_GRAY_COLOR) or FRIENDS_GRAY_COLOR
 			end
 		end
 
