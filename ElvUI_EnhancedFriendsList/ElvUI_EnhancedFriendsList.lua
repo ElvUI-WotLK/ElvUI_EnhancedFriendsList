@@ -46,7 +46,7 @@ P["enhanceFriendsList"] = {
 	-- General
 	["showBackground"] = true,
 	["showStatusIcon"] = true,
-	["statusIcons"] = "Square",
+	["statusIcons"] = "Default",
 	["nameFont"] = "PT Sans Narrow",
 	["nameFontSize"] = 12,
 	["nameFontOutline"] = "NONE",
@@ -54,25 +54,25 @@ P["enhanceFriendsList"] = {
 	["zoneFontSize"] = 12,
 	["zoneFontOutline"] = "NONE",
 	-- Online
-	["enhancedName"] = true,
+	["enhancedName"] = false,
 	["colorizeNameOnly"] = false,
 	["enhancedZone"] = false,
 	["enhancedZoneColor"] = {r = 1, g = 0.96, b = 0.45},
-	["hideClass"] = true,
+	["hideClass"] = false,
 	["levelColor"] = false,
-	["shortLevel"] = true,
+	["shortLevel"] = false,
 	["hideLevelText"] = false,
-	["sameZone"] = true,
+	["sameZone"] = false,
 	["sameZoneColor"] = {r = 0, g = 1, b = 0},
 	-- Offline
-	["offlineEnhancedName"] = true,
-	["offlineColorizeNameOnly"] = true,
+	["offlineEnhancedName"] = false,
+	["offlineColorizeNameOnly"] = false,
 	["offlineHideClass"] = true,
-	["offlineHideLevel"] = false,
+	["offlineHideLevel"] = true,
 	["offlineLevelColor"] = false,
-	["offlineShortLevel"] = true,
+	["offlineShortLevel"] = false,
 	["offlineHideLevelText"] = false,
-	["offlineShowZone"] = false,
+	["offlineShowZone"] = true,
 	["offlineShowLastSeen"] = true,
 }
 
@@ -417,13 +417,13 @@ function EFL:EnhanceFriends()
 	local numButtons = #buttons
 	local button
 	local name, level, class, area, connected, status
-	local colorHex, r, g, b, enhancedName, enhancedLevel, enhancedClass
+	local enhancedName, enhancedLevel, enhancedClass
 	local playerZone = GetRealZoneText()
 
 	for i = 1, numButtons do
 		button = buttons[i]
 		local Cooperate = false
-		local nameText, nameColor, infoText
+		local colorHex, r, g, b, nameText, nameColor, infoText
 
 		if button.buttonType == FRIENDS_BUTTON_TYPE_WOW then
 			name, level, class, area, connected, status = GetFriendInfo(button.id)
@@ -498,28 +498,19 @@ function EFL:EnhanceFriends()
 					infoText = (db.offlineShowZone and area..(db.offlineShowLastSeen and " - " or "") or "")..(db.offlineShowLastSeen and L["Last seen"].." "..RecentTimeDate(td.year, td.month, td.day, td.hour) or "")
 				else
 					nameText = name
-
-					if db.offlineShowZone then
-						if db.offlineShowLastSeen then -- ???
-							infoText = format("%s - %s", area, area)
-						else
-							infoText = area
-						end
-					else
-						if db.offlineShowLastSeen then -- ???
-							infoText = area
-						else
-							infoText = ""
-						end
-					end
+					infoText = area
 				end
 
 				if db.offlineEnhancedName then
 					if db.offlineColorizeNameOnly then
 						nameColor = FRIENDS_GRAY_COLOR
 					else
-						r, g, b = HexToRGB(colorHex)
-						nameColor = {r = r, g = g, b = b}
+						if colorHex then
+							r, g, b = HexToRGB(colorHex)
+							nameColor = {r = r, g = g, b = b}
+						else
+							nameColor = FRIENDS_GRAY_COLOR
+						end
 					end
 				else
 					nameColor = FRIENDS_GRAY_COLOR
