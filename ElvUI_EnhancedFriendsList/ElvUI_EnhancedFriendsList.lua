@@ -466,7 +466,7 @@ function EFL:EnhanceFriends_SetButton(button, index, firstButton)
 
 					button.name:Point("LEFT", button.iconFrame, "RIGHT", 3, 7)
 
-					button.iconFrame.texture:SetTexCoord(unpack(CLASS_ICON_TCOORDS[GetClassFileName(class)]))
+					button.iconFrame.texture:SetTexCoord(unpack(CLASS_ICON_TCOORDS[classFileName]))
 				else
 					button.iconFrame:Hide()
 					if db.showStatusIcon then
