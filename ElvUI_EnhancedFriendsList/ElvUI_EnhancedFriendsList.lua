@@ -1,5 +1,5 @@
 local E, L, V, P, G = unpack(ElvUI)
-local EFL = E:NewModule("EnhancedFriendsList")
+local EFL = E:NewModule("EnhancedFriendsList", "AceHook-3.0")
 local EP = LibStub("LibElvUIPlugin-1.0")
 local LSM = LibStub("LibSharedMedia-3.0", true)
 local addonName = ...
@@ -87,8 +87,6 @@ function EFL:InsertOptions()
 		type = "group",
 		childGroups = "tab",
 		name = ColorizeSettingName(L["Enhanced Friends List"]),
-		get = function(info) return E.db.enhanceFriendsList[ info[#info] ] end,
-		set = function(info, value) E.db.enhanceFriendsList[ info[#info] ] = value end,
 		args = {
 			header = {
 				order = 1,
@@ -99,18 +97,18 @@ function EFL:InsertOptions()
 				order = 2,
 				type = "group",
 				name = L["General"],
+				get = function(info) return E.db.enhanceFriendsList[ info[#info] ] end,
+				set = function(info, value) E.db.enhanceFriendsList[ info[#info] ] = value; FriendsList_Update(); FriendsFrameStatusDropDown_Update() end,
 				args = {
 					showBackground = {
 						order = 1,
 						type = "toggle",
-						name = L["Show Background"],
-						set = function(info, value) E.db.enhanceFriendsList.showBackground = value EFL:EnhanceFriends() end
+						name = L["Show Background"]
 					},
 					showStatusIcon = {
 						order = 2,
 						type = "toggle",
-						name = L["Show Status Icon"],
-						set = function(info, value) E.db.enhanceFriendsList.showStatusIcon = value EFL:EnhanceFriends() end
+						name = L["Show Status Icon"]
 					},
 					statusIcons = {
 						order = 3,
@@ -120,28 +118,27 @@ function EFL:InsertOptions()
 							["Default"] = "Default",
 							["Square"] = "Square",
 							["D3"] = "Diablo 3"
-						},
-						set = function(info, value) E.db.enhanceFriendsList.statusIcons = value EFL:EnhanceFriends() EFL:FriendDropdownUpdate() end
+						}
 					},
 					nameFont = {
 						order = 4,
 						type = "group",
 						name = L["Name Font"],
 						guiInline = true,
+						get = function(info) return E.db.enhanceFriendsList[ info[#info] ] end,
+						set = function(info, value) E.db.enhanceFriendsList[ info[#info] ] = value; FriendsList_Update() end,
 						args = {
 							nameFont = {
 								order = 1,
 								type = "select", dialogControl = "LSM30_Font",
 								name = L["Font"],
-								values = AceGUIWidgetLSMlists.font,
-								set = function(info, value) E.db.enhanceFriendsList.nameFont = value EFL:EnhanceFriends() end
+								values = AceGUIWidgetLSMlists.font
 							},
 							nameFontSize = {
 								order = 2,
 								type = "range",
 								name = FONT_SIZE,
-								min = 6, max = 22, step = 1,
-								set = function(info, value) E.db.enhanceFriendsList.nameFontSize = value EFL:EnhanceFriends() end
+								min = 6, max = 22, step = 1
 							},
 							nameFontOutline = {
 								order = 3,
@@ -153,8 +150,7 @@ function EFL:InsertOptions()
 									["OUTLINE"] = "OUTLINE",
 									["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
 									["THICKOUTLINE"] = "THICKOUTLINE"
-								},
-								set = function(info, value) E.db.enhanceFriendsList.nameFontOutline = value EFL:EnhanceFriends() end
+								}
 							}
 						}
 					},
@@ -163,20 +159,20 @@ function EFL:InsertOptions()
 						type = "group",
 						name = L["Zone Font"],
 						guiInline = true,
+						get = function(info) return E.db.enhanceFriendsList[ info[#info] ] end,
+						set = function(info, value) E.db.enhanceFriendsList[ info[#info] ] = value; FriendsList_Update() end,
 						args = {
 							zoneFont = {
 								order = 1,
 								type = "select", dialogControl = "LSM30_Font",
 								name = L["Font"],
-								values = AceGUIWidgetLSMlists.font,
-								set = function(info, value) E.db.enhanceFriendsList.zoneFont = value EFL:EnhanceFriends() end
+								values = AceGUIWidgetLSMlists.font
 							},
 							zoneFontSize = {
 								order = 2,
 								type = "range",
 								name = FONT_SIZE,
-								min = 6, max = 22, step = 1,
-								set = function(info, value) E.db.enhanceFriendsList.zoneFontSize = value EFL:EnhanceFriends() end
+								min = 6, max = 22, step = 1
 							},
 							zoneFontOutline = {
 								order = 3,
@@ -188,8 +184,7 @@ function EFL:InsertOptions()
 									["OUTLINE"] = "OUTLINE",
 									["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
 									["THICKOUTLINE"] = "THICKOUTLINE"
-								},
-								set = function(info, value) E.db.enhanceFriendsList.zoneFontOutline = value EFL:EnhanceFriends() end
+								}
 							}
 						}
 					}
@@ -199,31 +194,29 @@ function EFL:InsertOptions()
 				order = 3,
 				type = "group",
 				name = L["Online Friends"],
+				get = function(info) return E.db.enhanceFriendsList[ info[#info] ] end,
+				set = function(info, value) E.db.enhanceFriendsList[ info[#info] ] = value; FriendsList_Update() end,
 				args = {
 					enhancedName = {
 						order = 1,
 						type = "toggle",
-						name = L["Enhanced Name"],
-						set = function(info, value) E.db.enhanceFriendsList.enhancedName = value EFL:EnhanceFriends() end
+						name = L["Enhanced Name"]
 					},
 					colorizeNameOnly = {
 						order = 2,
 						type = "toggle",
 						name = L["Colorize Name Only"],
-						set = function(info, value) E.db.enhanceFriendsList.colorizeNameOnly = value EFL:EnhanceFriends() end,
 						disabled = function() return not E.db.enhanceFriendsList.enhancedName end
 					},
 					hideClass = {
 						order = 3,
 						type = "toggle",
-						name = L["Hide Class Text"],
-						set = function(info, value) E.db.enhanceFriendsList.hideClass = value EFL:EnhanceFriends() end
+						name = L["Hide Class Text"]
 					},
 					enhancedZone = {
 						order = 4,
 						type = "toggle",
-						name = L["Enhanced Zone"],
-						set = function(info, value) E.db.enhanceFriendsList.enhancedZone = value EFL:EnhanceFriends() end
+						name = L["Enhanced Zone"]
 					},
 					enhancedZoneColor = {
 						order = 5,
@@ -237,22 +230,20 @@ function EFL:InsertOptions()
 						set = function(info, r, g, b)
 							local t = E.db.enhanceFriendsList.enhancedZoneColor
 							t.r, t.g, t.b = r, g, b
-							EFL:EnhanceFriends()
+							FriendsList_Update()
 						end,
 						disabled = function() return not E.db.enhanceFriendsList.enhancedZone end
 					},
 					levelColor = {
 						order = 6,
 						type = "toggle",
-						name = L["Level Range Color"],
-						set = function(info, value) E.db.enhanceFriendsList.levelColor = value EFL:EnhanceFriends() end
+						name = L["Level Range Color"]
 					},
 					sameZone = {
 						order = 7,
 						type = "toggle",
 						name = L["Same Zone"],
-						desc = L["Friends that are in the same area as you, have their zone info colorized green."],
-						set = function(info, value) E.db.enhanceFriendsList.sameZone = value EFL:EnhanceFriends() end
+						desc = L["Friends that are in the same area as you, have their zone info colorized green."]
 					},
 					sameZoneColor = {
 						order = 8,
@@ -266,7 +257,7 @@ function EFL:InsertOptions()
 						set = function(info, r, g, b)
 							local t = E.db.enhanceFriendsList.sameZoneColor
 							t.r, t.g, t.b = r, g, b
-							EFL:EnhanceFriends()
+							FriendsList_Update()
 						end,
 						disabled = function() return not E.db.enhanceFriendsList.sameZone end
 					},
@@ -274,14 +265,12 @@ function EFL:InsertOptions()
 						order = 9,
 						type = "toggle",
 						name = L["Hide Level Text"],
-						desc = L["Hides the 'Level' or 'L' text."],
-						set = function(info, value) E.db.enhanceFriendsList.hideLevelText = value EFL:EnhanceFriends() end
+						desc = L["Hides the 'Level' or 'L' text."]
 					},
 					shortLevel = {
 						order = 10,
 						type = "toggle",
 						name = L["Short Level"],
-						set = function(info, value) E.db.enhanceFriendsList.shortLevel = value EFL:EnhanceFriends() end,
 						disabled = function() return E.db.enhanceFriendsList.hideLevelText end
 					}
 				}
@@ -290,64 +279,57 @@ function EFL:InsertOptions()
 				order = 4,
 				type = "group",
 				name = L["Offline Friends"],
+				get = function(info) return E.db.enhanceFriendsList[ info[#info] ] end,
+				set = function(info, value) E.db.enhanceFriendsList[ info[#info] ] = value; FriendsList_Update() end,
 				args = {
 					offlineEnhancedName = {
 						order = 1,
 						type = "toggle",
-						name = L["Enhanced Name"],
-						set = function(info, value) E.db.enhanceFriendsList.offlineEnhancedName = value EFL:EnhanceFriends() end
+						name = L["Enhanced Name"]
 					},
 					offlineColorizeNameOnly = {
 						order = 2,
 						type = "toggle",
 						name = L["Colorize Name Only"],
-						set = function(info, value) E.db.enhanceFriendsList.offlineColorizeNameOnly = value EFL:EnhanceFriends() end,
 						disabled = function() return not E.db.enhanceFriendsList.offlineEnhancedName end
 					},
 					offlineHideClass = {
 						order = 3,
 						type = "toggle",
-						name = L["Hide Class Text"],
-						set = function(info, value) E.db.enhanceFriendsList.offlineHideClass = value EFL:EnhanceFriends() end
+						name = L["Hide Class Text"]
 					},
 					offlineHideLevel = {
 						order = 4,
 						type = "toggle",
-						name = L["Hide Level"],
-						set = function(info, value) E.db.enhanceFriendsList.offlineHideLevel = value EFL:EnhanceFriends() end
+						name = L["Hide Level"]
 					},
 					offlineLevelColor = {
 						order = 5,
 						type = "toggle",
 						name = L["Level Range Color"],
-						set = function(info, value) E.db.enhanceFriendsList.offlineLevelColor = value EFL:EnhanceFriends() end,
 						disabled = function() return E.db.enhanceFriendsList.offlineHideLevel end
 					},
 					offlineHideLevelText = {
 						order = 6,
 						type = "toggle",
 						name = L["Hide Level Text"],
-						desc = L["Hides the 'Level' or 'L' text."],
-						set = function(info, value) E.db.enhanceFriendsList.offlineHideLevelText = value EFL:EnhanceFriends() end
+						desc = L["Hides the 'Level' or 'L' text."]
 					},
 					offlineShortLevel = {
 						order = 7,
 						type = "toggle",
 						name = L["Short Level"],
-						set = function(info, value) E.db.enhanceFriendsList.offlineShortLevel = value EFL:EnhanceFriends() end,
 						disabled = function() return E.db.enhanceFriendsList.offlineHideLevelText or E.db.enhanceFriendsList.offlineHideLevel end
 					},
 					offlineShowZone = {
 						order = 8,
 						type = "toggle",
-						name = L["Show Zone"],
-						set = function(info, value) E.db.enhanceFriendsList.offlineShowZone = value EFL:EnhanceFriends() end
+						name = L["Show Zone"]
 					},
 					offlineShowLastSeen = {
 						order = 9,
 						type = "toggle",
-						name = L["Show Last Seen"],
-						set = function(info, value) E.db.enhanceFriendsList.offlineShowLastSeen = value EFL:EnhanceFriends() end
+						name = L["Show Last Seen"]
 					}
 				}
 			}
@@ -409,101 +391,94 @@ local function HexToRGB(hex)
 	return {r = tonumber(rhex, 16)/225, g = tonumber(ghex, 16)/225, b = tonumber(bhex, 16)/225}
 end
 
-function EFL:EnhanceFriends()
+function EFL:EnhanceFriends_SetButton(button, index, firstButton)
 	local db = E.db.enhanceFriendsList
 	local levelTemplate = db.shortLevel and L["SHORT_LEVEL_TEMPLATE"] or L["LEVEL_TEMPLATE"]
 	local offlineLevelTemplate = db.offlineShortLevel and L["SHORT_LEVEL_TEMPLATE"] or L["LEVEL_TEMPLATE"]
 
-	local scrollFrame = FriendsFrameFriendsScrollFrame
-	local buttons = scrollFrame.buttons
-	local numButtons = #buttons
-	local button
-	local name, level, class, area, connected, status
-	local enhancedName, enhancedLevel, enhancedClass
-	local playerZone = GetRealZoneText()
+	if button.buttonType == FRIENDS_BUTTON_TYPE_WOW then
+		local name, level, class, area, connected, status = GetFriendInfo(button.id)
+		if not name then return end
 
-	for i = 1, numButtons do
-		button = buttons[i]
-		local Cooperate = false
+		local enhancedName, enhancedLevel, enhancedClass
 		local colorHex, nameText, nameColor, infoText
+		local Cooperate = false
 
-		if button.buttonType == FRIENDS_BUTTON_TYPE_WOW then
-			name, level, class, area, connected, status = GetFriendInfo(button.id)
-			if not name then return end
+		if db.showBackground then
+			button.background:Show()
+		else
+			button.background:Hide()
+		end
 
-			if db.showBackground then
-				button.background:Show()
-			else
-				button.background:Hide()
+		button.name:ClearAllPoints()
+		if db.showStatusIcon then
+			button.name:Point("TOPLEFT", 20, -3)
+			button.status:Show()
+		else
+			button.status:Hide()
+			button.name:Point("TOPLEFT", 3, -3)
+		end
+
+		infoText = area
+
+		if connected then
+			button.status:SetTexture(StatusIcons[db.statusIcons][(status == CHAT_FLAG_DND and "DND" or status == CHAT_FLAG_AFK and "AFK" or "Online")])
+
+			if not ElvCharacterDB.EnhancedFriendsList_Data[name] then
+				ElvCharacterDB.EnhancedFriendsList_Data[name] = {}
 			end
 
-			button.name:ClearAllPoints()
-			if db.showStatusIcon then
-				button.name:Point("TOPLEFT", 20, -3)
-				button.status:Show()
+			ElvCharacterDB.EnhancedFriendsList_Data[name].level = level
+			ElvCharacterDB.EnhancedFriendsList_Data[name].class = class
+			ElvCharacterDB.EnhancedFriendsList_Data[name].area = area
+			ElvCharacterDB.EnhancedFriendsList_Data[name].lastSeen = format("%i", time())
+
+			colorHex = GetClassColorHex(class)
+			enhancedName = db.enhancedName and colorHex..name.."|r" or name
+			enhancedLevel = format(db.hideLevelText and "%s" or levelTemplate, db.levelColor and GetLevelDiffColorHex(level)..level.."|r" or level).." "
+			enhancedClass = db.hideClass and "" or class
+
+			nameText = enhancedName..(db.enhancedName and " - " or ", ")..enhancedLevel..enhancedClass
+
+			nameColor = db.enhancedName and (db.colorizeNameOnly and HIGHLIGHT_FONT_COLOR or HexToRGB(colorHex)) or FRIENDS_WOW_NAME_COLOR
+
+			Cooperate = true
+		else
+			button.status:SetTexture(StatusIcons[db.statusIcons].Offline)
+
+			if ElvCharacterDB.EnhancedFriendsList_Data[name] then
+				local lastSeen = ElvCharacterDB.EnhancedFriendsList_Data[name].lastSeen
+				local td = timeDiff(time(), tonumber(lastSeen))
+				level = ElvCharacterDB.EnhancedFriendsList_Data[name].level
+				class = ElvCharacterDB.EnhancedFriendsList_Data[name].class
+				area = ElvCharacterDB.EnhancedFriendsList_Data[name].area
+
+				colorHex = GetClassColorHex(class, true)
+
+				enhancedName = db.offlineEnhancedName and colorHex..name.."|r" or name
+				enhancedLevel = db.offlineHideLevel and "" or format(db.offlineHideLevelText and "%s" or offlineLevelTemplate, db.offlineLevelColor and GetLevelDiffColorHex(level, true)..level.."|r" or level).." "
+				enhancedClass = db.offlineHideClass and "" or class
+
+				nameText = enhancedName..(db.offlineHideClass and db.offlineHideLevel and "" or (db.offlineEnhancedName and " - " or ", "))..enhancedLevel..enhancedClass
+
+				infoText = (db.offlineShowZone and area..(db.offlineShowLastSeen and " - " or "") or "")..(db.offlineShowLastSeen and L["Last seen"].." "..RecentTimeDate(td.year, td.month, td.day, td.hour) or "")
 			else
-				button.status:Hide()
-				button.name:Point("TOPLEFT", 3, -3)
+				nameText = name
+				infoText = area
 			end
 
-			infoText = area
-
-			if connected then
-				button.status:SetTexture(StatusIcons[db.statusIcons][(status == CHAT_FLAG_DND and "DND" or status == CHAT_FLAG_AFK and "AFK" or "Online")])
-
-				if not ElvCharacterDB.EnhancedFriendsList_Data[name] then
-					ElvCharacterDB.EnhancedFriendsList_Data[name] = {}
-				end
-
-				ElvCharacterDB.EnhancedFriendsList_Data[name].level = level
-				ElvCharacterDB.EnhancedFriendsList_Data[name].class = class
-				ElvCharacterDB.EnhancedFriendsList_Data[name].area = area
-				ElvCharacterDB.EnhancedFriendsList_Data[name].lastSeen = format("%i", time())
-
-				colorHex = GetClassColorHex(class)
-				enhancedName = db.enhancedName and colorHex..name.."|r" or name
-				enhancedLevel = format(db.hideLevelText and "%s" or levelTemplate, db.levelColor and GetLevelDiffColorHex(level)..level.."|r" or level).." "
-				enhancedClass = db.hideClass and "" or class
-
-				nameText = enhancedName..(db.enhancedName and " - " or ", ")..enhancedLevel..enhancedClass
-
-				nameColor = db.enhancedName and (db.colorizeNameOnly and HIGHLIGHT_FONT_COLOR or HexToRGB(colorHex)) or FRIENDS_WOW_NAME_COLOR
-
-				Cooperate = true
-			else
-				button.status:SetTexture(StatusIcons[db.statusIcons].Offline)
-
-				if ElvCharacterDB.EnhancedFriendsList_Data[name] then
-					local lastSeen = ElvCharacterDB.EnhancedFriendsList_Data[name].lastSeen
-					local td = timeDiff(time(), tonumber(lastSeen))
-					level = ElvCharacterDB.EnhancedFriendsList_Data[name].level
-					class = ElvCharacterDB.EnhancedFriendsList_Data[name].class
-					area = ElvCharacterDB.EnhancedFriendsList_Data[name].area
-
-					colorHex = GetClassColorHex(class, true)
-
-					enhancedName = db.offlineEnhancedName and colorHex..name.."|r" or name
-					enhancedLevel = db.offlineHideLevel and "" or format(db.offlineHideLevelText and "%s" or offlineLevelTemplate, db.offlineLevelColor and GetLevelDiffColorHex(level, true)..level.."|r" or level).." "
-					enhancedClass = db.offlineHideClass and "" or class
-
-					nameText = enhancedName..(db.offlineHideClass and db.offlineHideLevel and "" or (db.offlineEnhancedName and " - " or ", "))..enhancedLevel..enhancedClass
-
-					infoText = (db.offlineShowZone and area..(db.offlineShowLastSeen and " - " or "") or "")..(db.offlineShowLastSeen and L["Last seen"].." "..RecentTimeDate(td.year, td.month, td.day, td.hour) or "")
-				else
-					nameText = name
-					infoText = area
-				end
-
-				nameColor = db.offlineEnhancedName and not db.offlineColorizeNameOnly and (HexToRGB(colorHex) or FRIENDS_GRAY_COLOR) or FRIENDS_GRAY_COLOR
-			end
+			nameColor = db.offlineEnhancedName and not db.offlineColorizeNameOnly and (HexToRGB(colorHex) or FRIENDS_GRAY_COLOR) or FRIENDS_GRAY_COLOR
 		end
 
 		if nameText then
+			
 			button.name:SetText(nameText)
 			button.name:SetTextColor(nameColor.r, nameColor.g, nameColor.b)
 			button.info:SetText(infoText)
 			button.info:SetTextColor(0.49, 0.52, 0.54)
 			if Cooperate then
+				local playerZone = GetRealZoneText()
+
 				if db.enhancedZone then
 					if db.sameZone then
 						if infoText == playerZone then
@@ -532,10 +507,8 @@ function EFL:EnhanceFriends()
 	end
 end
 
-function EFL:FriendDropdownUpdate()
-	local status
-	status = (StatusIcons[E.db.enhanceFriendsList.statusIcons][(UnitIsDND("Player") and "DND" or UnitIsAFK("Player") and "AFK" or "Online")])
-
+function EFL:FriendsFrameStatusDropDown_Update()
+	local status = (StatusIcons[E.db.enhanceFriendsList.statusIcons][(UnitIsDND("Player") and "DND" or UnitIsAFK("Player") and "AFK" or "Online")])
 	FriendsFrameStatusDropDownStatus:SetTexture(status)
 end
 
@@ -544,14 +517,8 @@ function EFL:FriendListUpdate()
 		ElvCharacterDB.EnhancedFriendsList_Data = {}
 	end
 
-	if E.global.EnhancedFriendsList_Data then
-		ElvCharacterDB.EnhancedFriendsList_Data = E.global.EnhancedFriendsList_Data
-		E.global.EnhancedFriendsList_Data = nil
-	end
-
-	hooksecurefunc("DynamicScrollFrame_Update", EFL.EnhanceFriends)
-	hooksecurefunc("FriendsList_Update", EFL.EnhanceFriends)
-	hooksecurefunc("FriendsFrameStatusDropDown_Update", EFL.FriendDropdownUpdate)
+	self:SecureHook("FriendsFrameStatusDropDown_Update")
+	self:SecureHook(FriendsFrameFriendsScrollFrame, "buttonFunc", "EnhanceFriends_SetButton")
 end
 
 function EFL:Initialize()
