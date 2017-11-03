@@ -53,6 +53,7 @@ P["enhanceFriendsList"] = {
 	["zoneFontSize"] = 12,
 	["zoneFontOutline"] = "NONE",
 	-- Online
+	["classIconFrame"] = true,
 	["enhancedName"] = false,
 	["colorizeNameOnly"] = false,
 	["enhancedZone"] = false,
@@ -196,6 +197,11 @@ function EFL:InsertOptions()
 				get = function(info) return E.db.enhanceFriendsList[ info[#info] ] end,
 				set = function(info, value) E.db.enhanceFriendsList[ info[#info] ] = value; FriendsList_Update() end,
 				args = {
+					classIconFrame = {
+						order = 0,
+						type = "toggle",
+						name = L["Icon Frame"]
+					},
 					enhancedName = {
 						order = 1,
 						type = "toggle",
@@ -361,19 +367,23 @@ local function GetLevelDiffColorHex(level, offline)
 	end
 end
 
-local function GetClassColorHex(class, offline)
+local function GetClassFileName(class)
 	for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
 		if class == v then
-			class = k
+			return k
 		end
 	end
 	if Locale ~= "enUS" then
 		for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
 			if class == v then
-				class = k
+				return k
 			end
 		end
 	end
+end
+
+local function GetClassColorHex(class, offline)
+	class = GetClassFileName(class)
 
 	local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
 	if color then
@@ -431,6 +441,43 @@ function EFL:EnhanceFriends_SetButton(button, index, firstButton)
 			ElvCharacterDB.EnhancedFriendsList_Data[name].class = class
 			ElvCharacterDB.EnhancedFriendsList_Data[name].area = area
 			ElvCharacterDB.EnhancedFriendsList_Data[name].lastSeen = format("%i", time())
+
+			if db.classIconFrame then
+				if not button.iconFrame then
+					button.iconFrame = CreateFrame("Frame", nil, button)
+					button.iconFrame:Size(22)
+					button.iconFrame:SetTemplate("Default")
+
+					button.iconFrame.texture = button.iconFrame:CreateTexture(nil, "OVERLAY")
+					button.iconFrame.texture:SetAllPoints()
+					button.iconFrame.texture:SetTexture("Interface\\WorldStateFrame\\Icons-Classes")
+				end
+
+				button.name:ClearAllPoints()
+
+				local classFileName = GetClassFileName(class)
+				if classFileName then
+					button.iconFrame:Show()
+					if db.showStatusIcon then
+						button.iconFrame:Point("LEFT", 20, 0)
+					else
+						button.iconFrame:Point("LEFT", 3, 0)
+					end
+
+					button.name:Point("LEFT", button.iconFrame, "RIGHT", 3, 7)
+
+					button.iconFrame.texture:SetTexCoord(unpack(CLASS_ICON_TCOORDS[GetClassFileName(class)]))
+				else
+					button.iconFrame:Hide()
+					if db.showStatusIcon then
+						button.name:Point("TOPLEFT", 20, -3)
+					else
+						button.name:Point("TOPLEFT", 3, -3)
+					end
+				end
+			elseif button.iconFrame and button.iconFrame:IsShown() then
+				button.iconFrame:Hide()
+			end
 
 			colorHex = GetClassColorHex(class)
 			enhancedName = db.enhancedName and colorHex..name.."|r" or name
