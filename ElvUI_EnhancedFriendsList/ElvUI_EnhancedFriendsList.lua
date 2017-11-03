@@ -367,23 +367,17 @@ local function GetLevelDiffColorHex(level, offline)
 	end
 end
 
-local function GetClassFileName(class)
-	for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
-		if class == v then
-			return k
-		end
-	end
-	if Locale ~= "enUS" then
-		for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
-			if class == v then
-				return k
-			end
-		end
-	end
+local localizedTable = {}
+for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
+	localizedTable[v] = k
+end
+
+for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
+	localizedTable[v] = k
 end
 
 local function GetClassColorHex(class, offline)
-	class = GetClassFileName(class)
+	class = localizedTable[class]
 
 	local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
 	if color then
@@ -448,14 +442,14 @@ function EFL:EnhanceFriends_SetButton(button, index, firstButton)
 					button.iconFrame:Size(22)
 					button.iconFrame:SetTemplate("Default")
 
-					button.iconFrame.texture = button.iconFrame:CreateTexture(nil, "OVERLAY")
+					button.iconFrame.texture = button.iconFrame:CreateTexture()
 					button.iconFrame.texture:SetAllPoints()
 					button.iconFrame.texture:SetTexture("Interface\\WorldStateFrame\\Icons-Classes")
 				end
 
 				button.name:ClearAllPoints()
 
-				local classFileName = GetClassFileName(class)
+				local classFileName = localizedTable[class]
 				if classFileName then
 					button.iconFrame:Show()
 					if db.showStatusIcon then
