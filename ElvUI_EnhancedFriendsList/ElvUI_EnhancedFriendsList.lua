@@ -495,30 +495,18 @@ function EFL:EnhanceFriends()
 
 					nameText = enhancedName..(db.offlineHideClass and db.offlineHideLevel and "" or (db.offlineEnhancedName and " - " or ", "))..enhancedLevel..enhancedClass
 
-					if db.offlineShowZone then
-						if db.offlineShowLastSeen then
-							infoText = format("%s - %s %s", area, L["Last seen"], RecentTimeDate(td.year, td.month, td.day, td.hour))
-						else
-							infoText = area
-						end
-					else
-						if db.offlineShowLastSeen then
-							infoText = format("%s %s", L["Last seen"], RecentTimeDate(td.year, td.month, td.day, td.hour))
-						else
-							infoText = ""
-						end
-					end
+					infoText = (db.offlineShowZone and area..(db.offlineShowLastSeen and " - " or "") or "")..(db.offlineShowLastSeen and L["Last seen"].." "..RecentTimeDate(td.year, td.month, td.day, td.hour) or "")
 				else
 					nameText = name
 
 					if db.offlineShowZone then
-						if db.offlineShowLastSeen then
+						if db.offlineShowLastSeen then -- ???
 							infoText = format("%s - %s", area, area)
 						else
 							infoText = area
 						end
 					else
-						if db.offlineShowLastSeen then
+						if db.offlineShowLastSeen then -- ???
 							infoText = area
 						else
 							infoText = ""

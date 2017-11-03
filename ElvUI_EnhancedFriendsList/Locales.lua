@@ -198,7 +198,7 @@ if L then
 	L["Hide Class Text"] = true;
 	L["Hide Level Text"] = true;
 	L["Hides the 'Level' or 'L' text."] = true;
-	L["Last seen"] = true;
+	L["Last seen"] = "Не всети";
 	L["Level Range Color"] = true;
 	L["Name Font"] = true;
 	L["Offline Friends"] = true;
