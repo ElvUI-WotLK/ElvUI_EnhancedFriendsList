@@ -9,11 +9,11 @@ L["Enhanced Zone Color"] = true;
 L["Enhanced Zone"] = true;
 L["Friends that are in the same area as you, have their zone info colorized green."] = true;
 L["Hide Class Text"] = true;
+L["Hide Level Text"] = true;
+L["Hides the 'Level' or 'L' text."] = true;
 L["Last seen"] = true;
 L["Level Range Color"] = true;
 L["Name Font"] = true;
-L["Name Font Size"] = true;
-L["Name Font Outline"] = true;
 L["Offline Friends"] = true;
 L["Online Friends"] = true;
 L["Same Zone Color"] = true;
@@ -27,8 +27,6 @@ L["Show Status Icon"] = true;
 L["Show Zone"] = true;
 L["Status Icons Textures"] = true
 L["Zone Font"] = true;
-L["Zone Font Size"] = true;
-L["Zone Font Outline"] = true;
 
 if GetLocale() == "enUS" then return end
 
@@ -42,11 +40,11 @@ if L then
 	L["Enhanced Zone"] = true;
 	L["Friends that are in the same area as you, have their zone info colorized green."] = true;
 	L["Hide Class Text"] = true;
+	L["Hide Level Text"] = true;
+	L["Hides the 'Level' or 'L' text."] = true;
 	L["Last seen"] = true;
 	L["Level Range Color"] = true;
 	L["Name Font"] = true;
-	L["Name Font Size"] = true;
-	L["Name Font Outline"] = true;
 	L["Offline Friends"] = true;
 	L["Online Friends"] = true;
 	L["Same Zone Color"] = true;
@@ -60,8 +58,6 @@ if L then
 	L["Show Zone"] = true;
 	L["Status Icons Textures"] = true
 	L["Zone Font"] = true;
-	L["Zone Font Size"] = true;
-	L["Zone Font Outline"] = true;
 end
 
 -- Spanish
@@ -74,11 +70,11 @@ if L then
 	L["Enhanced Zone"] = true;
 	L["Friends that are in the same area as you, have their zone info colorized green."] = true;
 	L["Hide Class Text"] = true;
+	L["Hide Level Text"] = true;
+	L["Hides the 'Level' or 'L' text."] = true;
 	L["Last seen"] = true;
 	L["Level Range Color"] = true;
 	L["Name Font"] = true;
-	L["Name Font Size"] = true;
-	L["Name Font Outline"] = true;
 	L["Offline Friends"] = true;
 	L["Online Friends"] = true;
 	L["Same Zone Color"] = true;
@@ -92,8 +88,6 @@ if L then
 	L["Show Zone"] = true;
 	L["Status Icons Textures"] = true
 	L["Zone Font"] = true;
-	L["Zone Font Size"] = true;
-	L["Zone Font Outline"] = true;
 end
 
 -- French
@@ -106,11 +100,11 @@ if L then
 	L["Enhanced Zone"] = true;
 	L["Friends that are in the same area as you, have their zone info colorized green."] = true;
 	L["Hide Class Text"] = true;
+	L["Hide Level Text"] = true;
+	L["Hides the 'Level' or 'L' text."] = true;
 	L["Last seen"] = true;
 	L["Level Range Color"] = true;
 	L["Name Font"] = true;
-	L["Name Font Size"] = true;
-	L["Name Font Outline"] = true;
 	L["Offline Friends"] = true;
 	L["Online Friends"] = true;
 	L["Same Zone Color"] = true;
@@ -124,8 +118,6 @@ if L then
 	L["Show Zone"] = true;
 	L["Status Icons Textures"] = true
 	L["Zone Font"] = true;
-	L["Zone Font Size"] = true;
-	L["Zone Font Outline"] = true;
 end
 
 -- Korean
@@ -138,11 +130,11 @@ if L then
 	L["Enhanced Zone"] = true;
 	L["Friends that are in the same area as you, have their zone info colorized green."] = true;
 	L["Hide Class Text"] = true;
+	L["Hide Level Text"] = true;
+	L["Hides the 'Level' or 'L' text."] = true;
 	L["Last seen"] = true;
 	L["Level Range Color"] = true;
 	L["Name Font"] = true;
-	L["Name Font Size"] = true;
-	L["Name Font Outline"] = true;
 	L["Offline Friends"] = true;
 	L["Online Friends"] = true;
 	L["Same Zone Color"] = true;
@@ -156,8 +148,6 @@ if L then
 	L["Show Zone"] = true;
 	L["Status Icons Textures"] = true
 	L["Zone Font"] = true;
-	L["Zone Font Size"] = true;
-	L["Zone Font Outline"] = true;
 end
 
 -- Portuguese
@@ -170,11 +160,11 @@ if L then
 	L["Enhanced Zone"] = true;
 	L["Friends that are in the same area as you, have their zone info colorized green."] = true;
 	L["Hide Class Text"] = true;
+	L["Hide Level Text"] = true;
+	L["Hides the 'Level' or 'L' text."] = true;
 	L["Last seen"] = true;
 	L["Level Range Color"] = true;
 	L["Name Font"] = true;
-	L["Name Font Size"] = true;
-	L["Name Font Outline"] = true;
 	L["Offline Friends"] = true;
 	L["Online Friends"] = true;
 	L["Same Zone Color"] = true;
@@ -188,8 +178,6 @@ if L then
 	L["Show Zone"] = true;
 	L["Status Icons Textures"] = true
 	L["Zone Font"] = true;
-	L["Zone Font Size"] = true;
-	L["Zone Font Outline"] = true;
 end
 
 -- Russian
@@ -202,11 +190,11 @@ if L then
 	L["Enhanced Zone"] = true;
 	L["Friends that are in the same area as you, have their zone info colorized green."] = true;
 	L["Hide Class Text"] = true;
+	L["Hide Level Text"] = true;
+	L["Hides the 'Level' or 'L' text."] = true;
 	L["Last seen"] = true;
 	L["Level Range Color"] = true;
 	L["Name Font"] = true;
-	L["Name Font Size"] = true;
-	L["Name Font Outline"] = true;
 	L["Offline Friends"] = true;
 	L["Online Friends"] = true;
 	L["Same Zone Color"] = true;
@@ -220,8 +208,6 @@ if L then
 	L["Show Zone"] = true;
 	L["Status Icons Textures"] = true
 	L["Zone Font"] = true;
-	L["Zone Font Size"] = true;
-	L["Zone Font Outline"] = true;
 end
 
 -- Chinese (China, simplified)
@@ -234,11 +220,11 @@ if L then
 	L["Enhanced Zone"] = true;
 	L["Friends that are in the same area as you, have their zone info colorized green."] = true;
 	L["Hide Class Text"] = true;
+	L["Hide Level Text"] = true;
+	L["Hides the 'Level' or 'L' text."] = true;
 	L["Last seen"] = true;
 	L["Level Range Color"] = true;
 	L["Name Font"] = true;
-	L["Name Font Size"] = true;
-	L["Name Font Outline"] = true;
 	L["Offline Friends"] = true;
 	L["Online Friends"] = true;
 	L["Same Zone Color"] = true;
@@ -252,8 +238,6 @@ if L then
 	L["Show Zone"] = true;
 	L["Status Icons Textures"] = true
 	L["Zone Font"] = true;
-	L["Zone Font Size"] = true;
-	L["Zone Font Outline"] = true;
 end
 
 -- Chinese (Taiwan, traditional)
@@ -266,11 +250,11 @@ if L then
 	L["Enhanced Zone"] = true;
 	L["Friends that are in the same area as you, have their zone info colorized green."] = true;
 	L["Hide Class Text"] = true;
+	L["Hide Level Text"] = true;
+	L["Hides the 'Level' or 'L' text."] = true;
 	L["Last seen"] = true;
 	L["Level Range Color"] = true;
 	L["Name Font"] = true;
-	L["Name Font Size"] = true;
-	L["Name Font Outline"] = true;
 	L["Offline Friends"] = true;
 	L["Online Friends"] = true;
 	L["Same Zone Color"] = true;
@@ -284,6 +268,4 @@ if L then
 	L["Show Zone"] = true;
 	L["Status Icons Textures"] = true
 	L["Zone Font"] = true;
-	L["Zone Font Size"] = true;
-	L["Zone Font Outline"] = true;
 end

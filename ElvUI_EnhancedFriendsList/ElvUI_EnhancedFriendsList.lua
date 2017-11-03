@@ -47,7 +47,12 @@ P["enhanceFriendsList"] = {
 	["showBackground"] = true,
 	["showStatusIcon"] = true,
 	["statusIcons"] = "Square",
-	["hideLevelText"] = false,
+	["nameFont"] = "PT Sans Narrow",
+	["nameFontSize"] = 12,
+	["nameFontOutline"] = "NONE",
+	["zoneFont"] = "PT Sans Narrow",
+	["zoneFontSize"] = 12,
+	["zoneFontOutline"] = "NONE",
 	-- Online
 	["enhancedName"] = true,
 	["colorizeNameOnly"] = false,
@@ -56,6 +61,7 @@ P["enhanceFriendsList"] = {
 	["hideClass"] = true,
 	["levelColor"] = false,
 	["shortLevel"] = true,
+	["hideLevelText"] = false,
 	["sameZone"] = true,
 	["sameZoneColor"] = {r = 0, g = 1, b = 0},
 	-- Offline
@@ -65,16 +71,9 @@ P["enhanceFriendsList"] = {
 	["offlineHideLevel"] = false,
 	["offlineLevelColor"] = false,
 	["offlineShortLevel"] = true,
+	["offlineHideLevelText"] = false,
 	["offlineShowZone"] = false,
 	["offlineShowLastSeen"] = true,
-	-- Name Text Font
-	["nameFont"] = "PT Sans Narrow",
-	["nameFontSize"] = 12,
-	["nameFontOutline"] = "NONE",
-	-- Zone Text Font
-	["zoneFont"] = "PT Sans Narrow",
-	["zoneFontSize"] = 12,
-	["zoneFontOutline"] = "NONE"
 }
 
 -- Options
@@ -86,6 +85,7 @@ function EFL:InsertOptions()
 	E.Options.args.enhanceFriendsList = {
 		order = 54,
 		type = "group",
+		childGroups = "tab",
 		name = ColorizeSettingName(L["Enhanced Friends List"]),
 		get = function(info) return E.db.enhanceFriendsList[ info[#info] ] end,
 		set = function(info, value) E.db.enhanceFriendsList[ info[#info] ] = value end,
@@ -99,7 +99,6 @@ function EFL:InsertOptions()
 				order = 2,
 				type = "group",
 				name = L["General"],
-				guiInline = true,
 				args = {
 					showBackground = {
 						order = 1,
@@ -124,11 +123,75 @@ function EFL:InsertOptions()
 						},
 						set = function(info, value) E.db.enhanceFriendsList.statusIcons = value EFL:EnhanceFriends() EFL:FriendDropdownUpdate() end
 					},
-					hideLevelText = {
+					nameFont = {
 						order = 4,
-						type = "toggle",
-						name = L["Hide Level or L Text"],
-						set = function(info, value) E.db.enhanceFriendsList.hideLevelText = value EFL:EnhanceFriends() end
+						type = "group",
+						name = L["Name Font"],
+						guiInline = true,
+						args = {
+							nameFont = {
+								order = 1,
+								type = "select", dialogControl = "LSM30_Font",
+								name = L["Font"],
+								values = AceGUIWidgetLSMlists.font,
+								set = function(info, value) E.db.enhanceFriendsList.nameFont = value EFL:EnhanceFriends() end
+							},
+							nameFontSize = {
+								order = 2,
+								type = "range",
+								name = FONT_SIZE,
+								min = 6, max = 22, step = 1,
+								set = function(info, value) E.db.enhanceFriendsList.nameFontSize = value EFL:EnhanceFriends() end
+							},
+							nameFontOutline = {
+								order = 3,
+								type = "select",
+								name = L["Name Font Outline"],
+								desc = L["Set the font outline."],
+								values = {
+									["NONE"] = NONE,
+									["OUTLINE"] = "OUTLINE",
+									["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
+									["THICKOUTLINE"] = "THICKOUTLINE"
+								},
+								set = function(info, value) E.db.enhanceFriendsList.nameFontOutline = value EFL:EnhanceFriends() end
+							}
+						}
+					},
+					zoneFont = {
+						order = 5,
+						type = "group",
+						name = L["Zone Font"],
+						guiInline = true,
+						args = {
+							zoneFont = {
+								order = 1,
+								type = "select", dialogControl = "LSM30_Font",
+								name = L["Font"],
+								values = AceGUIWidgetLSMlists.font,
+								set = function(info, value) E.db.enhanceFriendsList.zoneFont = value EFL:EnhanceFriends() end
+							},
+							zoneFontSize = {
+								order = 2,
+								type = "range",
+								name = FONT_SIZE,
+								min = 6, max = 22, step = 1,
+								set = function(info, value) E.db.enhanceFriendsList.zoneFontSize = value EFL:EnhanceFriends() end
+							},
+							zoneFontOutline = {
+								order = 3,
+								type = "select",
+								name = L["Font Outline"],
+								desc = L["Set the font outline."],
+								values = {
+									["NONE"] = NONE,
+									["OUTLINE"] = "OUTLINE",
+									["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
+									["THICKOUTLINE"] = "THICKOUTLINE"
+								},
+								set = function(info, value) E.db.enhanceFriendsList.zoneFontOutline = value EFL:EnhanceFriends() end
+							}
+						}
 					}
 				}
 			},
@@ -136,7 +199,6 @@ function EFL:InsertOptions()
 				order = 3,
 				type = "group",
 				name = L["Online Friends"],
-				guiInline = true,
 				args = {
 					enhancedName = {
 						order = 1,
@@ -208,8 +270,15 @@ function EFL:InsertOptions()
 						end,
 						disabled = function() return not E.db.enhanceFriendsList.sameZone end
 					},
-					shortLevel = {
+					hideLevelText = {
 						order = 9,
+						type = "toggle",
+						name = L["Hide Level Text"],
+						desc = L["Hides the 'Level' or 'L' text."],
+						set = function(info, value) E.db.enhanceFriendsList.hideLevelText = value EFL:EnhanceFriends() end
+					},
+					shortLevel = {
+						order = 10,
 						type = "toggle",
 						name = L["Short Level"],
 						set = function(info, value) E.db.enhanceFriendsList.shortLevel = value EFL:EnhanceFriends() end,
@@ -221,7 +290,6 @@ function EFL:InsertOptions()
 				order = 4,
 				type = "group",
 				name = L["Offline Friends"],
-				guiInline = true,
 				args = {
 					offlineEnhancedName = {
 						order = 1,
@@ -255,86 +323,31 @@ function EFL:InsertOptions()
 						set = function(info, value) E.db.enhanceFriendsList.offlineLevelColor = value EFL:EnhanceFriends() end,
 						disabled = function() return E.db.enhanceFriendsList.offlineHideLevel end
 					},
-					offlineShortLevel = {
+					offlineHideLevelText = {
 						order = 6,
+						type = "toggle",
+						name = L["Hide Level Text"],
+						desc = L["Hides the 'Level' or 'L' text."],
+						set = function(info, value) E.db.enhanceFriendsList.offlineHideLevelText = value EFL:EnhanceFriends() end
+					},
+					offlineShortLevel = {
+						order = 7,
 						type = "toggle",
 						name = L["Short Level"],
 						set = function(info, value) E.db.enhanceFriendsList.offlineShortLevel = value EFL:EnhanceFriends() end,
-						disabled = function() return E.db.enhanceFriendsList.hideLevelText or E.db.enhanceFriendsList.offlineHideLevel end
+						disabled = function() return E.db.enhanceFriendsList.offlineHideLevelText or E.db.enhanceFriendsList.offlineHideLevel end
 					},
 					offlineShowZone = {
-						order = 7,
+						order = 8,
 						type = "toggle",
 						name = L["Show Zone"],
 						set = function(info, value) E.db.enhanceFriendsList.offlineShowZone = value EFL:EnhanceFriends() end
 					},
 					offlineShowLastSeen = {
-						order = 8,
+						order = 9,
 						type = "toggle",
 						name = L["Show Last Seen"],
 						set = function(info, value) E.db.enhanceFriendsList.offlineShowLastSeen = value EFL:EnhanceFriends() end
-					}
-				}
-			},
-			font = {
-				order = 5,
-				type = "group",
-				name = L["Font"],
-				guiInline = true,
-				args = {
-					nameFont = {
-						order = 1,
-						type = "select", dialogControl = "LSM30_Font",
-						name = L["Name Font"],
-						values = AceGUIWidgetLSMlists.font,
-						set = function(info, value) E.db.enhanceFriendsList.nameFont = value EFL:EnhanceFriends() end
-					},
-					nameFontSize = {
-						order = 2,
-						type = "range",
-						name = L["Name Font Size"],
-						min = 6, max = 22, step = 1,
-						set = function(info, value) E.db.enhanceFriendsList.nameFontSize = value EFL:EnhanceFriends() end
-					},
-					nameFontOutline = {
-						order = 3,
-						type = "select",
-						name = L["Name Font Outline"],
-						desc = L["Set the font outline."],
-						values = {
-							["NONE"] = NONE,
-							["OUTLINE"] = "OUTLINE",
-							["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
-							["THICKOUTLINE"] = "THICKOUTLINE"
-						},
-						set = function(info, value) E.db.enhanceFriendsList.nameFontOutline = value EFL:EnhanceFriends() end
-					},
-					zoneFont = {
-						order = 4,
-						type = "select", dialogControl = "LSM30_Font",
-						name = L["Zone Font"],
-						values = AceGUIWidgetLSMlists.font,
-						set = function(info, value) E.db.enhanceFriendsList.zoneFont = value EFL:EnhanceFriends() end
-					},
-					zoneFontSize = {
-						order = 5,
-						type = "range",
-						name = L["Zone Font Size"],
-						min = 6, max = 22, step = 1,
-						set = function(info, value) E.db.enhanceFriendsList.zoneFontSize = value EFL:EnhanceFriends() end
-					},
-					zoneFontOutline = {
-						order = 6,
-						type = "select",
-						name = L["Zone Font Outline"],
-						desc = L["Set the font outline."],
-						values = {
-							["NONE"] = NONE,
-							["OUTLINE"] = "OUTLINE",
-							["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
-							["THICKOUTLINE"] = "THICKOUTLINE"
-						},
-						set = function(info, value) E.db.enhanceFriendsList.zoneFontOutline = value EFL:EnhanceFriends() end
 					}
 				}
 			}
@@ -505,7 +518,7 @@ function EFL:EnhanceFriends()
 								if db.offlineHideLevel then
 									nameText = format("%s%s", OfflineColorCode(class), name)
 								else
-									if db.hideLevelText then
+									if db.offlineHideLevelText then
 										nameText = format("%s%s|r - %s%s", OfflineColorCode(class), name, offlineDiffColor, level)
 									else
 										nameText = format("%s%s|r - %s %s%s", OfflineColorCode(class), name, offlineShortLevel, offlineDiffColor, level)
@@ -515,7 +528,7 @@ function EFL:EnhanceFriends()
 								if db.offlineHideLevel then
 									nameText = format("%s%s|r - %s", OfflineColorCode(class), name, class)
 								else
-									if db.hideLevelText then
+									if db.offlineHideLevelText then
 										nameText = format("%s%s|r - %s%s|r %s", OfflineColorCode(class), name, offlineDiffColor, level, class)
 									else
 										nameText = format("%s%s|r - %s %s%s|r %s", OfflineColorCode(class), name, offlineShortLevel, offlineDiffColor, level, class)
@@ -527,7 +540,7 @@ function EFL:EnhanceFriends()
 								if db.offlineHideLevel then
 									nameText = format("%s%s", OfflineColorCode(class), name)
 								else
-									if db.hideLevelText then
+									if db.offlineHideLevelText then
 										nameText = format("%s%s - %s%s", OfflineColorCode(class), name, offlineDiffColor, level)
 									else
 										nameText = format("%s%s - %s %s%s", OfflineColorCode(class), name, offlineShortLevel, offlineDiffColor, level)
@@ -537,7 +550,7 @@ function EFL:EnhanceFriends()
 								if db.offlineHideLevel then
 									nameText = format("%s%s - %s", OfflineColorCode(class), name, class)
 								else
-									if db.hideLevelText then
+									if db.offlineHideLevelText then
 										nameText = format("%s%s - %s%s|r %s%s", OfflineColorCode(class), name, offlineDiffColor, level, OfflineColorCode(class), class)
 									else
 										nameText = format("%s%s - %s %s%s|r %s%s", OfflineColorCode(class), name, offlineShortLevel, offlineDiffColor, level, OfflineColorCode(class), class)
@@ -550,7 +563,7 @@ function EFL:EnhanceFriends()
 							if db.offlineHideLevel then
 								nameText = name
 							else
-								if db.hideLevelText then
+								if db.offlineHideLevelText then
 									nameText = format("%s - %s%s", name, offlineDiffColor, level)
 								else
 									nameText = format("%s - %s %s%s", name, offlineShortLevel, offlineDiffColor, level)
@@ -560,7 +573,7 @@ function EFL:EnhanceFriends()
 							if db.offlineHideLevel then
 								nameText = format("%s - %s", name, class)
 							else
-								if db.hideLevelText then
+								if db.offlineHideLevelText then
 									nameText = format("%s - %s%s|r %s", name, offlineDiffColor, level, class)
 								else
 									nameText = format("%s - %s %s%s|r %s", name, offlineShortLevel, offlineDiffColor, level, class)
