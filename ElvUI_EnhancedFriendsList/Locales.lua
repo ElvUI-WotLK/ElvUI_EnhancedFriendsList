@@ -18,7 +18,6 @@ L["Offline Friends"] = true;
 L["Online Friends"] = true;
 L["Same Zone Color"] = true;
 L["Same Zone"] = true;
-L["SHORT_LEVEL"] = "L"
 L["Short Level"] = true;
 L["Show Background"] = true;
 L["Show Last Seen"] = true;
@@ -27,6 +26,8 @@ L["Show Status Icon"] = true;
 L["Show Zone"] = true;
 L["Status Icons Textures"] = true
 L["Zone Font"] = true;
+L["LEVEL_TEMPLATE"] = "Level %s";
+L["SHORT_LEVEL_TEMPLATE"] = "L %s";
 
 if GetLocale() == "enUS" then return end
 
@@ -49,7 +50,6 @@ if L then
 	L["Online Friends"] = true;
 	L["Same Zone Color"] = true;
 	L["Same Zone"] = true;
-	L["SHORT_LEVEL"] = "L"
 	L["Short Level"] = true;
 	L["Show Background"] = true;
 	L["Show Last Seen"] = true;
@@ -58,6 +58,8 @@ if L then
 	L["Show Zone"] = true;
 	L["Status Icons Textures"] = true
 	L["Zone Font"] = true;
+	L["LEVEL_TEMPLATE"] = "Level %s";
+	L["SHORT_LEVEL_TEMPLATE"] = "L %s";
 end
 
 -- Spanish
@@ -79,7 +81,6 @@ if L then
 	L["Online Friends"] = true;
 	L["Same Zone Color"] = true;
 	L["Same Zone"] = true;
-	L["SHORT_LEVEL"] = "L"
 	L["Short Level"] = true;
 	L["Show Background"] = true;
 	L["Show Last Seen"] = true;
@@ -88,6 +89,8 @@ if L then
 	L["Show Zone"] = true;
 	L["Status Icons Textures"] = true
 	L["Zone Font"] = true;
+	L["LEVEL_TEMPLATE"] = "Level %s";
+	L["SHORT_LEVEL_TEMPLATE"] = "L %s";
 end
 
 -- French
@@ -109,7 +112,6 @@ if L then
 	L["Online Friends"] = true;
 	L["Same Zone Color"] = true;
 	L["Same Zone"] = true;
-	L["SHORT_LEVEL"] = "L"
 	L["Short Level"] = true;
 	L["Show Background"] = true;
 	L["Show Last Seen"] = true;
@@ -118,6 +120,8 @@ if L then
 	L["Show Zone"] = true;
 	L["Status Icons Textures"] = true
 	L["Zone Font"] = true;
+	L["LEVEL_TEMPLATE"] = "Level %s";
+	L["SHORT_LEVEL_TEMPLATE"] = "L %s";
 end
 
 -- Korean
@@ -139,7 +143,6 @@ if L then
 	L["Online Friends"] = true;
 	L["Same Zone Color"] = true;
 	L["Same Zone"] = true;
-	L["SHORT_LEVEL"] = "L"
 	L["Short Level"] = true;
 	L["Show Background"] = true;
 	L["Show Last Seen"] = true;
@@ -148,6 +151,8 @@ if L then
 	L["Show Zone"] = true;
 	L["Status Icons Textures"] = true
 	L["Zone Font"] = true;
+	L["LEVEL_TEMPLATE"] = "Level %s";
+	L["SHORT_LEVEL_TEMPLATE"] = "L %s";
 end
 
 -- Portuguese
@@ -169,7 +174,6 @@ if L then
 	L["Online Friends"] = true;
 	L["Same Zone Color"] = true;
 	L["Same Zone"] = true;
-	L["SHORT_LEVEL"] = "L"
 	L["Short Level"] = true;
 	L["Show Background"] = true;
 	L["Show Last Seen"] = true;
@@ -178,6 +182,8 @@ if L then
 	L["Show Zone"] = true;
 	L["Status Icons Textures"] = true
 	L["Zone Font"] = true;
+	L["LEVEL_TEMPLATE"] = "Level %s";
+	L["SHORT_LEVEL_TEMPLATE"] = "L %s";
 end
 
 -- Russian
@@ -199,7 +205,6 @@ if L then
 	L["Online Friends"] = true;
 	L["Same Zone Color"] = true;
 	L["Same Zone"] = true;
-	L["SHORT_LEVEL"] = "L"
 	L["Short Level"] = true;
 	L["Show Background"] = true;
 	L["Show Last Seen"] = true;
@@ -208,6 +213,8 @@ if L then
 	L["Show Zone"] = true;
 	L["Status Icons Textures"] = true
 	L["Zone Font"] = true;
+	L["LEVEL_TEMPLATE"] = "%s-го уровня";
+	L["SHORT_LEVEL_TEMPLATE"] = "%s-го ур.";
 end
 
 -- Chinese (China, simplified)
@@ -229,7 +236,6 @@ if L then
 	L["Online Friends"] = true;
 	L["Same Zone Color"] = true;
 	L["Same Zone"] = true;
-	L["SHORT_LEVEL"] = "L"
 	L["Short Level"] = true;
 	L["Show Background"] = true;
 	L["Show Last Seen"] = true;
@@ -238,6 +244,8 @@ if L then
 	L["Show Zone"] = true;
 	L["Status Icons Textures"] = true
 	L["Zone Font"] = true;
+	L["LEVEL_TEMPLATE"] = "Level %s";
+	L["SHORT_LEVEL_TEMPLATE"] = "L %s";
 end
 
 -- Chinese (Taiwan, traditional)
@@ -259,7 +267,6 @@ if L then
 	L["Online Friends"] = true;
 	L["Same Zone Color"] = true;
 	L["Same Zone"] = true;
-	L["SHORT_LEVEL"] = "L"
 	L["Short Level"] = true;
 	L["Show Background"] = true;
 	L["Show Last Seen"] = true;
@@ -268,4 +275,6 @@ if L then
 	L["Show Zone"] = true;
 	L["Status Icons Textures"] = true
 	L["Zone Font"] = true;
+	L["LEVEL_TEMPLATE"] = "Level %s";
+	L["SHORT_LEVEL_TEMPLATE"] = "L %s";
 end

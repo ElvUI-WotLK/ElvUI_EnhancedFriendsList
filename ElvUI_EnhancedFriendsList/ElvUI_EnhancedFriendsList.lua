@@ -417,8 +417,8 @@ local function GetClassColorHex(class)
 	end
 
 	local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
-	if class then
-		return E:RGBToHex(color.r, color.g, color.b)
+	if color then
+		return color
 	else
 		return ""
 	end
@@ -426,20 +426,20 @@ end
 
 function EFL:EnhanceFriends()
 	local db = E.db.enhanceFriendsList
-	local shortLevel = db.shortLevel and L["SHORT_LEVEL"] or LEVEL
+	local levelTemplate = db.shortLevel and L["SHORT_LEVEL_TEMPLATE"] or L["LEVEL_TEMPLATE"]
 
 	local scrollFrame = FriendsFrameFriendsScrollFrame
 	local buttons = scrollFrame.buttons
 	local numButtons = #buttons
 	local button
 	local name, level, class, area, connected, status
+	local color, enhancedName, enhancedLevel, enhancedClass
 	local playerZone = GetRealZoneText()
-	
+
 	for i = 1, numButtons do
 		button = buttons[i]
 		local Cooperate = false
-		local nameText, nameColor, levelText, infoText
-		local classHex
+		local nameText, nameColor, infoText
 
 		if button.buttonType == FRIENDS_BUTTON_TYPE_WOW then
 			name, level, class, area, connected, status = GetFriendInfo(button.id)
@@ -474,20 +474,23 @@ function EFL:EnhanceFriends()
 				ElvCharacterDB.EnhancedFriendsList_Data[name].area = area
 				ElvCharacterDB.EnhancedFriendsList_Data[name].lastSeen = format("%i", time())
 
-				classHex = db.enhancedName and not db.colorizeNameOnly and GetClassColorHex(class) or ""
+				color = GetClassColorHex(class)
+				enhancedName = db.enhancedName and E:RGBToHex(color.r, color.g, color.b)..name.."|r" or name
+				enhancedLevel = db.hideLevelText and "" or format(levelTemplate, db.levelColor and GetLevelDiffColorHex(level)..level.."|r" or level).." "
+				enhancedClass = db.hideClass and "" or class
 
-				name = db.enhancedName and GetClassColorHex(class)..name.."|r" or name
-				levelText = db.hideLevelText and "" or (classHex..shortLevel.."|r" or shortLevel)
-				level = db.levelColor and GetLevelDiffColorHex(level)..level.."|r" or (classHex..level.."|r" or level)
-				class = db.hideClass and "" or (classHex..class.."|r" or class)
+				nameText = enhancedName..(db.hideClass and db.hideLevelText and "" or (db.enhancedName and " - " or ", "))..enhancedLevel..enhancedClass
 
 				if db.enhancedName then
-					nameText = format("%s - %s %s %s", name, levelText, level, class)
+					if db.colorizeNameOnly then
+						nameColor = HIGHLIGHT_FONT_COLOR
+					else
+						nameColor = color
+					end
 				else
-					nameText = format("%s, %s %s %s", name, levelText, level, class)
+					nameColor = FRIENDS_WOW_NAME_COLOR
 				end
 
-				nameColor = db.enhancedName and HIGHLIGHT_FONT_COLOR or FRIENDS_WOW_NAME_COLOR
 				Cooperate = true
 			else
 				button.status:SetTexture(StatusIcons[db.statusIcons].Offline)
