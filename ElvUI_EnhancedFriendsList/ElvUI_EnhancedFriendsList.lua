@@ -427,6 +427,7 @@ end
 function EFL:EnhanceFriends()
 	local db = E.db.enhanceFriendsList
 	local levelTemplate = db.shortLevel and L["SHORT_LEVEL_TEMPLATE"] or L["LEVEL_TEMPLATE"]
+	local offlineLevelTemplate = db.offlineShortLevel and L["SHORT_LEVEL_TEMPLATE"] or L["LEVEL_TEMPLATE"]
 
 	local scrollFrame = FriendsFrameFriendsScrollFrame
 	local buttons = scrollFrame.buttons
@@ -476,10 +477,10 @@ function EFL:EnhanceFriends()
 
 				color = GetClassColorHex(class)
 				enhancedName = db.enhancedName and E:RGBToHex(color.r, color.g, color.b)..name.."|r" or name
-				enhancedLevel = db.hideLevelText and "" or format(levelTemplate, db.levelColor and GetLevelDiffColorHex(level)..level.."|r" or level).." "
+				enhancedLevel = format(db.hideLevelText and "%s" or levelTemplate, db.levelColor and GetLevelDiffColorHex(level)..level.."|r" or level).." "
 				enhancedClass = db.hideClass and "" or class
 
-				nameText = enhancedName..(db.hideClass and db.hideLevelText and "" or (db.enhancedName and " - " or ", "))..enhancedLevel..enhancedClass
+				nameText = enhancedName..(db.enhancedName and " - " or ", ")..enhancedLevel..enhancedClass
 
 				if db.enhancedName then
 					if db.colorizeNameOnly then
@@ -493,97 +494,24 @@ function EFL:EnhanceFriends()
 
 				Cooperate = true
 			else
+
 				button.status:SetTexture(StatusIcons[db.statusIcons].Offline)
 
 				if ElvCharacterDB.EnhancedFriendsList_Data[name] then
+
 					local lastSeen = ElvCharacterDB.EnhancedFriendsList_Data[name].lastSeen
 					local td = timeDiff(time(), tonumber(lastSeen))
 					level = ElvCharacterDB.EnhancedFriendsList_Data[name].level
 					class = ElvCharacterDB.EnhancedFriendsList_Data[name].class
 					area = ElvCharacterDB.EnhancedFriendsList_Data[name].area
 
-					local offlineShortLevel = db.offlineShortLevel and L["SHORT_LEVEL"] or LEVEL
-					local offlineDiff = level ~= 0 and format("|cff%02x%02x%02x", GetQuestDifficultyColor(level).r * 160, GetQuestDifficultyColor(level).g * 160, GetQuestDifficultyColor(level).b * 160) or "|cFFAFAFAF|r"
-					local offlineDiffColor
-					if db.offlineEnhancedName then
-						if db.offlineColorizeNameOnly then
-							offlineDiffColor = db.offlineLevelColor and offlineDiff or "|cFFAFAFAF|r"
-						else
-							offlineDiffColor = db.offlineLevelColor and offlineDiff or OfflineColorCode(class)
-						end
-					else
-						offlineDiffColor = db.offlineLevelColor and offlineDiff or "|cFFAFAFAF|r"
-					end
+					color = GetClassColorHex(class)
 
-					if db.offlineEnhancedName then
-						if db.offlineColorizeNameOnly then
-							if db.offlineHideClass then
-								if db.offlineHideLevel then
-									nameText = format("%s%s", OfflineColorCode(class), name)
-								else
-									if db.offlineHideLevelText then
-										nameText = format("%s%s|r - %s%s", OfflineColorCode(class), name, offlineDiffColor, level)
-									else
-										nameText = format("%s%s|r - %s %s%s", OfflineColorCode(class), name, offlineShortLevel, offlineDiffColor, level)
-									end
-								end
-							else
-								if db.offlineHideLevel then
-									nameText = format("%s%s|r - %s", OfflineColorCode(class), name, class)
-								else
-									if db.offlineHideLevelText then
-										nameText = format("%s%s|r - %s%s|r %s", OfflineColorCode(class), name, offlineDiffColor, level, class)
-									else
-										nameText = format("%s%s|r - %s %s%s|r %s", OfflineColorCode(class), name, offlineShortLevel, offlineDiffColor, level, class)
-									end
-								end
-							end
-						else
-							if db.offlineHideClass then
-								if db.offlineHideLevel then
-									nameText = format("%s%s", OfflineColorCode(class), name)
-								else
-									if db.offlineHideLevelText then
-										nameText = format("%s%s - %s%s", OfflineColorCode(class), name, offlineDiffColor, level)
-									else
-										nameText = format("%s%s - %s %s%s", OfflineColorCode(class), name, offlineShortLevel, offlineDiffColor, level)
-									end
-								end
-							else
-								if db.offlineHideLevel then
-									nameText = format("%s%s - %s", OfflineColorCode(class), name, class)
-								else
-									if db.offlineHideLevelText then
-										nameText = format("%s%s - %s%s|r %s%s", OfflineColorCode(class), name, offlineDiffColor, level, OfflineColorCode(class), class)
-									else
-										nameText = format("%s%s - %s %s%s|r %s%s", OfflineColorCode(class), name, offlineShortLevel, offlineDiffColor, level, OfflineColorCode(class), class)
-									end
-								end
-							end
-						end
-					else
-						if db.offlineHideClass then
-							if db.offlineHideLevel then
-								nameText = name
-							else
-								if db.offlineHideLevelText then
-									nameText = format("%s - %s%s", name, offlineDiffColor, level)
-								else
-									nameText = format("%s - %s %s%s", name, offlineShortLevel, offlineDiffColor, level)
-								end
-							end
-						else
-							if db.offlineHideLevel then
-								nameText = format("%s - %s", name, class)
-							else
-								if db.offlineHideLevelText then
-									nameText = format("%s - %s%s|r %s", name, offlineDiffColor, level, class)
-								else
-									nameText = format("%s - %s %s%s|r %s", name, offlineShortLevel, offlineDiffColor, level, class)
-								end
-							end
-						end
-					end
+					enhancedName = db.offlineEnhancedName and OfflineColorCode(class)..name.."|r" or name
+					enhancedLevel = db.offlineHideLevel and "" or format(db.offlineHideLevelText and "%s" or offlineLevelTemplate, db.offlineLevelColor and GetLevelDiffColorHex(level)..level.."|r" or level).." "
+					enhancedClass = db.offlineHideClass and "" or class
+
+					nameText = enhancedName..(db.offlineHideClass and db.offlineHideLevel and "" or (db.enhancedName and " - " or ", "))..enhancedLevel..enhancedClass
 
 					if db.offlineShowZone then
 						if db.offlineShowLastSeen then
@@ -616,7 +544,15 @@ function EFL:EnhanceFriends()
 					end
 				end
 
-				nameColor = FRIENDS_GRAY_COLOR
+				if db.offlineEnhancedName then
+					if db.offlineColorizeNameOnly then
+						nameColor = FRIENDS_GRAY_COLOR
+					else
+						nameColor = color
+					end
+				else
+					nameColor = FRIENDS_GRAY_COLOR
+				end
 			end
 		end
 
