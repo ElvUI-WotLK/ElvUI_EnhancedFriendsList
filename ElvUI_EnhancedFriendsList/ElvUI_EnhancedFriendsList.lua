@@ -355,28 +355,6 @@ function EFL:InsertOptions()
 	}
 end
 
-local function OfflineColorCode(class)
-	for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
-		if class == v then
-			class = k
-		end
-	end
-	if Locale ~= "enUS" then
-		for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
-			if class == v then
-				class = k
-			end
-		end
-	end
-
-	local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
-	if not color then
-		return format("|cFF%02x%02x%02x", 160, 160, 160)
-	else
-		return format("|cFF%02x%02x%02x", color.r*160, color.g*160, color.b*160)
-	end
-end
-
 local function timeDiff(t2, t1)
 	if t2 < t1 then return end
 
@@ -393,16 +371,16 @@ local function timeDiff(t2, t1)
 	return diff
 end
 
-local function GetLevelDiffColorHex(level)
+local function GetLevelDiffColorHex(level, offline)
 	if level ~= 0 then
 		local color = GetQuestDifficultyColor(level)
-		return E:RGBToHex(color.r, color.g, color.b)
+		return offline and format("|cFF%02x%02x%02x", color.r*160, color.g*160, color.b*160) or format("|cFF%02x%02x%02x", color.r*255, color.g*255, color.b*255)
 	else
-		return "|cFFFFFFFF"
+		return offline and "|cFFAFAFAF" or "|cFFFFFFFF"
 	end
 end
 
-local function GetClassColorHex(class)
+local function GetClassColorHex(class, offline)
 	for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
 		if class == v then
 			class = k
@@ -418,10 +396,15 @@ local function GetClassColorHex(class)
 
 	local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
 	if color then
-		return color
+		return offline and format("|cff%02x%02x%02x", color.r*160, color.g*160, color.b*160) or format("|cff%02x%02x%02x", color.r*255, color.g*255, color.b*255)
 	else
-		return ""
+		return offline and "|cFFAFAFAF" or "|cFFFFFFFF"
 	end
+end
+
+local function HexToRGB(hex)
+	local rhex, ghex, bhex = string.sub(hex, 5, 6), string.sub(hex, 7, 8), string.sub(hex, 9, 10)
+	return tonumber(rhex, 16)/225, tonumber(ghex, 16)/225, tonumber(bhex, 16)/225
 end
 
 function EFL:EnhanceFriends()
@@ -434,7 +417,7 @@ function EFL:EnhanceFriends()
 	local numButtons = #buttons
 	local button
 	local name, level, class, area, connected, status
-	local color, enhancedName, enhancedLevel, enhancedClass
+	local colorHex, r, g, b, enhancedName, enhancedLevel, enhancedClass
 	local playerZone = GetRealZoneText()
 
 	for i = 1, numButtons do
@@ -475,8 +458,8 @@ function EFL:EnhanceFriends()
 				ElvCharacterDB.EnhancedFriendsList_Data[name].area = area
 				ElvCharacterDB.EnhancedFriendsList_Data[name].lastSeen = format("%i", time())
 
-				color = GetClassColorHex(class)
-				enhancedName = db.enhancedName and E:RGBToHex(color.r, color.g, color.b)..name.."|r" or name
+				colorHex = GetClassColorHex(class)
+				enhancedName = db.enhancedName and colorHex..name.."|r" or name
 				enhancedLevel = format(db.hideLevelText and "%s" or levelTemplate, db.levelColor and GetLevelDiffColorHex(level)..level.."|r" or level).." "
 				enhancedClass = db.hideClass and "" or class
 
@@ -486,7 +469,8 @@ function EFL:EnhanceFriends()
 					if db.colorizeNameOnly then
 						nameColor = HIGHLIGHT_FONT_COLOR
 					else
-						nameColor = color
+						r, g, b = HexToRGB(colorHex)
+						nameColor = {r = r, g = g, b = b}
 					end
 				else
 					nameColor = FRIENDS_WOW_NAME_COLOR
@@ -494,24 +478,22 @@ function EFL:EnhanceFriends()
 
 				Cooperate = true
 			else
-
 				button.status:SetTexture(StatusIcons[db.statusIcons].Offline)
 
 				if ElvCharacterDB.EnhancedFriendsList_Data[name] then
-
 					local lastSeen = ElvCharacterDB.EnhancedFriendsList_Data[name].lastSeen
 					local td = timeDiff(time(), tonumber(lastSeen))
 					level = ElvCharacterDB.EnhancedFriendsList_Data[name].level
 					class = ElvCharacterDB.EnhancedFriendsList_Data[name].class
 					area = ElvCharacterDB.EnhancedFriendsList_Data[name].area
 
-					color = GetClassColorHex(class)
+					colorHex = GetClassColorHex(class, true)
 
-					enhancedName = db.offlineEnhancedName and OfflineColorCode(class)..name.."|r" or name
-					enhancedLevel = db.offlineHideLevel and "" or format(db.offlineHideLevelText and "%s" or offlineLevelTemplate, db.offlineLevelColor and GetLevelDiffColorHex(level)..level.."|r" or level).." "
+					enhancedName = db.offlineEnhancedName and colorHex..name.."|r" or name
+					enhancedLevel = db.offlineHideLevel and "" or format(db.offlineHideLevelText and "%s" or offlineLevelTemplate, db.offlineLevelColor and GetLevelDiffColorHex(level, true)..level.."|r" or level).." "
 					enhancedClass = db.offlineHideClass and "" or class
 
-					nameText = enhancedName..(db.offlineHideClass and db.offlineHideLevel and "" or (db.enhancedName and " - " or ", "))..enhancedLevel..enhancedClass
+					nameText = enhancedName..(db.offlineHideClass and db.offlineHideLevel and "" or (db.offlineEnhancedName and " - " or ", "))..enhancedLevel..enhancedClass
 
 					if db.offlineShowZone then
 						if db.offlineShowLastSeen then
@@ -548,7 +530,8 @@ function EFL:EnhanceFriends()
 					if db.offlineColorizeNameOnly then
 						nameColor = FRIENDS_GRAY_COLOR
 					else
-						nameColor = color
+						r, g, b = HexToRGB(colorHex)
+						nameColor = {r = r, g = g, b = b}
 					end
 				else
 					nameColor = FRIENDS_GRAY_COLOR
