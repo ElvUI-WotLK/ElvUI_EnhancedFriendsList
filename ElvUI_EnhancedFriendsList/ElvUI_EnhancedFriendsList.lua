@@ -11,7 +11,6 @@ local IsChatAFK = IsChatAFK
 local IsChatDND = IsChatDND
 local GetFriendInfo = GetFriendInfo
 local GetQuestDifficultyColor = GetQuestDifficultyColor
-local GetNumFriends = GetNumFriends
 local LEVEL = LEVEL
 local FRIENDS_BUTTON_TYPE_WOW = FRIENDS_BUTTON_TYPE_WOW
 local LOCALIZED_CLASS_NAMES_FEMALE = LOCALIZED_CLASS_NAMES_FEMALE
@@ -471,7 +470,6 @@ function EFL:EnhanceFriends_SetButton(button, index, firstButton)
 		end
 
 		if nameText then
-			
 			button.name:SetText(nameText)
 			button.name:SetTextColor(nameColor.r, nameColor.g, nameColor.b)
 			button.info:SetText(infoText)
