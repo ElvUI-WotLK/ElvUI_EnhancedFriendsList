@@ -53,7 +53,7 @@ P["enhanceFriendsList"] = {
 	["zoneFontSize"] = 12,
 	["zoneFontOutline"] = "NONE",
 	-- Online
-	["classIconFrame"] = true,
+	["classIconFrame"] = false,
 	["enhancedName"] = false,
 	["colorizeNameOnly"] = false,
 	["enhancedZone"] = false,
@@ -63,7 +63,7 @@ P["enhanceFriendsList"] = {
 	["shortLevel"] = false,
 	["hideLevelText"] = false,
 	["sameZone"] = false,
-	["sameZoneColor"] = {r = 0, g = 1, b = 0},
+	["sameZoneColor"] = {r = 0.3, g = 1.0, b = 0.3},
 	-- Offline
 	["offlineEnhancedName"] = false,
 	["offlineColorizeNameOnly"] = false,
