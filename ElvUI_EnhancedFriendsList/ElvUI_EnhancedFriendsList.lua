@@ -415,7 +415,7 @@ function EFL:EnhanceFriends_SetButton(button, index, firstButton)
 
 		button.name:ClearAllPoints()
 		if db.showStatusIcon then
-			button.name:Point("TOPLEFT", 20, -3)
+			button.name:Point("TOPLEFT", 22, -3)
 			button.status:Show()
 		else
 			button.status:Hide()
@@ -439,7 +439,7 @@ function EFL:EnhanceFriends_SetButton(button, index, firstButton)
 			if db.classIconFrame then
 				if not button.iconFrame then
 					button.iconFrame = CreateFrame("Frame", nil, button)
-					button.iconFrame:Size(22)
+					button.iconFrame:Size(26)
 					button.iconFrame:SetTemplate("Default")
 
 					button.iconFrame.texture = button.iconFrame:CreateTexture()
@@ -453,7 +453,7 @@ function EFL:EnhanceFriends_SetButton(button, index, firstButton)
 				if classFileName then
 					button.iconFrame:Show()
 					if db.showStatusIcon then
-						button.iconFrame:Point("LEFT", 20, 0)
+						button.iconFrame:Point("LEFT", 22, 0)
 					else
 						button.iconFrame:Point("LEFT", 3, 0)
 					end
@@ -464,7 +464,7 @@ function EFL:EnhanceFriends_SetButton(button, index, firstButton)
 				else
 					button.iconFrame:Hide()
 					if db.showStatusIcon then
-						button.name:Point("TOPLEFT", 20, -3)
+						button.name:Point("TOPLEFT", 22, -3)
 					else
 						button.name:Point("TOPLEFT", 3, -3)
 					end
