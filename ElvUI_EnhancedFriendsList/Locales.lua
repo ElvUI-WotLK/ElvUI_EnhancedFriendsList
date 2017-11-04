@@ -3,6 +3,7 @@ local L = LibStub("AceLocale-3.0"):NewLocale("ElvUI", "enUS", true);
 if not L then return end
 
 L["Colorize Name Only"] = true;
+L["Class Icon"] = true;
 L["Enhanced Friends List"] = true;
 L["Enhanced Name"] = true;
 L["Enhanced Zone Color"] = true;
@@ -35,6 +36,7 @@ if GetLocale() == "enUS" then return end
 local L = LibStub("AceLocale-3.0"):NewLocale("ElvUI", "deDE")
 if L then
 	L["Colorize Name Only"] = true;
+	L["Class Icon"] = true;
 	L["Enhanced Friends List"] = true;
 	L["Enhanced Name"] = true;
 	L["Enhanced Zone Color"] = true;
@@ -66,6 +68,7 @@ end
 local L = LibStub("AceLocale-3.0"):NewLocale("ElvUI", "esES")
 if L then
 	L["Colorize Name Only"] = true;
+	L["Class Icon"] = true;
 	L["Enhanced Friends List"] = true;
 	L["Enhanced Name"] = true;
 	L["Enhanced Zone Color"] = true;
@@ -97,6 +100,7 @@ end
 local L = LibStub("AceLocale-3.0"):NewLocale("ElvUI", "frFR")
 if L then
 	L["Colorize Name Only"] = true;
+	L["Class Icon"] = true;
 	L["Enhanced Friends List"] = true;
 	L["Enhanced Name"] = true;
 	L["Enhanced Zone Color"] = true;
@@ -128,6 +132,7 @@ end
 local L = LibStub("AceLocale-3.0"):NewLocale("ElvUI", "koKR")
 if L then
 	L["Colorize Name Only"] = true;
+	L["Class Icon"] = true;
 	L["Enhanced Friends List"] = true;
 	L["Enhanced Name"] = true;
 	L["Enhanced Zone Color"] = true;
@@ -159,6 +164,7 @@ end
 local L = LibStub("AceLocale-3.0"):NewLocale("ElvUI", "ptBR")
 if L then
 	L["Colorize Name Only"] = true;
+	L["Class Icon"] = true;
 	L["Enhanced Friends List"] = true;
 	L["Enhanced Name"] = true;
 	L["Enhanced Zone Color"] = true;
@@ -190,29 +196,30 @@ end
 local L = LibStub("AceLocale-3.0"):NewLocale("ElvUI", "ruRU")
 if L then
 	L["Colorize Name Only"] = true;
+	L["Class Icon"] = "Иконка класса";
 	L["Enhanced Friends List"] = true;
 	L["Enhanced Name"] = true;
 	L["Enhanced Zone Color"] = true;
 	L["Enhanced Zone"] = true;
 	L["Friends that are in the same area as you, have their zone info colorized green."] = true;
-	L["Hide Class Text"] = true;
-	L["Hide Level Text"] = true;
-	L["Hides the 'Level' or 'L' text."] = true;
+	L["Hide Class Text"] = "Скрыть текст класса";
+	L["Hide Level Text"] = "Скруть текст уровня";
+	L["Hides the 'Level' or 'L' text."] = "Скрывает текст '-го уровня' или '-го ур.'";
 	L["Last seen"] = "Не всети";
 	L["Level Range Color"] = true;
-	L["Name Font"] = true;
+	L["Name Font"] = "Шрифт имяни";
 	L["Offline Friends"] = true;
 	L["Online Friends"] = true;
 	L["Same Zone Color"] = true;
 	L["Same Zone"] = true;
-	L["Short Level"] = true;
-	L["Show Background"] = true;
-	L["Show Last Seen"] = true;
-	L["Show Level"] = true;
-	L["Show Status Icon"] = true;
-	L["Show Zone"] = true;
-	L["Status Icons Textures"] = true
-	L["Zone Font"] = true;
+	L["Short Level"] = "Короткий текст уровеня";
+	L["Show Background"] = "Показать фон";
+	L["Show Last Seen"] = "Показать последнее посещение";
+	L["Show Level"] = "Показать уровень";
+	L["Show Status Icon"] = "Показать иконку статуса";
+	L["Show Zone"] = "Показать зону";
+	L["Status Icons Textures"] = "Иконка статуса"
+	L["Zone Font"] = "Шрифт зоны";
 	L["LEVEL_TEMPLATE"] = "%s-го уровня";
 	L["SHORT_LEVEL_TEMPLATE"] = "%s-го ур.";
 end
@@ -221,6 +228,7 @@ end
 local L = LibStub("AceLocale-3.0"):NewLocale("ElvUI", "zhCN")
 if L then
 	L["Colorize Name Only"] = true;
+	L["Class Icon"] = true;
 	L["Enhanced Friends List"] = true;
 	L["Enhanced Name"] = true;
 	L["Enhanced Zone Color"] = true;
@@ -252,6 +260,7 @@ end
 local L = LibStub("AceLocale-3.0"):NewLocale("ElvUI", "zhTW")
 if L then
 	L["Colorize Name Only"] = true;
+	L["Class Icon"] = true;
 	L["Enhanced Friends List"] = true;
 	L["Enhanced Name"] = true;
 	L["Enhanced Zone Color"] = true;

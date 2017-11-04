@@ -53,7 +53,6 @@ P["enhanceFriendsList"] = {
 	["zoneFontSize"] = 12,
 	["zoneFontOutline"] = "NONE",
 	-- Online
-	["classIconFrame"] = false,
 	["enhancedName"] = false,
 	["colorizeNameOnly"] = false,
 	["enhancedZone"] = false,
@@ -64,6 +63,7 @@ P["enhanceFriendsList"] = {
 	["hideLevelText"] = false,
 	["sameZone"] = false,
 	["sameZoneColor"] = {r = 0.3, g = 1.0, b = 0.3},
+	["classIcon"] = false,
 	-- Offline
 	["offlineEnhancedName"] = false,
 	["offlineColorizeNameOnly"] = false,
@@ -74,6 +74,7 @@ P["enhanceFriendsList"] = {
 	["offlineHideLevelText"] = false,
 	["offlineShowZone"] = true,
 	["offlineShowLastSeen"] = true,
+	["offlineClassIcon"] = false,
 }
 
 -- Options
@@ -197,11 +198,6 @@ function EFL:InsertOptions()
 				get = function(info) return E.db.enhanceFriendsList[ info[#info] ] end,
 				set = function(info, value) E.db.enhanceFriendsList[ info[#info] ] = value; FriendsList_Update() end,
 				args = {
-					classIconFrame = {
-						order = 0,
-						type = "toggle",
-						name = L["Icon Frame"]
-					},
 					enhancedName = {
 						order = 1,
 						type = "toggle",
@@ -277,6 +273,11 @@ function EFL:InsertOptions()
 						type = "toggle",
 						name = L["Short Level"],
 						disabled = function() return E.db.enhanceFriendsList.hideLevelText end
+					},
+					classIcon = {
+						order = 11,
+						type = "toggle",
+						name = L["Class Icon"]
 					}
 				}
 			},
@@ -335,6 +336,11 @@ function EFL:InsertOptions()
 						order = 9,
 						type = "toggle",
 						name = L["Show Last Seen"]
+					},
+					offlineClassIcon = {
+						order = 10,
+						type = "toggle",
+						name = L["Class Icon"]
 					}
 				}
 			}
@@ -405,7 +411,6 @@ function EFL:EnhanceFriends_SetButton(button, index, firstButton)
 
 		local enhancedName, enhancedLevel, enhancedClass
 		local colorHex, nameText, nameColor, infoText
-		local Cooperate = false
 
 		if db.showBackground then
 			button.background:Show()
@@ -436,43 +441,6 @@ function EFL:EnhanceFriends_SetButton(button, index, firstButton)
 			ElvCharacterDB.EnhancedFriendsList_Data[name].area = area
 			ElvCharacterDB.EnhancedFriendsList_Data[name].lastSeen = format("%i", time())
 
-			if db.classIconFrame then
-				if not button.iconFrame then
-					button.iconFrame = CreateFrame("Frame", nil, button)
-					button.iconFrame:Size(26)
-					button.iconFrame:SetTemplate("Default")
-
-					button.iconFrame.texture = button.iconFrame:CreateTexture()
-					button.iconFrame.texture:SetAllPoints()
-					button.iconFrame.texture:SetTexture("Interface\\WorldStateFrame\\Icons-Classes")
-				end
-
-				button.name:ClearAllPoints()
-
-				local classFileName = localizedTable[class]
-				if classFileName then
-					button.iconFrame:Show()
-					if db.showStatusIcon then
-						button.iconFrame:Point("LEFT", 22, 0)
-					else
-						button.iconFrame:Point("LEFT", 3, 0)
-					end
-
-					button.name:Point("LEFT", button.iconFrame, "RIGHT", 3, 7)
-
-					button.iconFrame.texture:SetTexCoord(unpack(CLASS_ICON_TCOORDS[classFileName]))
-				else
-					button.iconFrame:Hide()
-					if db.showStatusIcon then
-						button.name:Point("TOPLEFT", 22, -3)
-					else
-						button.name:Point("TOPLEFT", 3, -3)
-					end
-				end
-			elseif button.iconFrame and button.iconFrame:IsShown() then
-				button.iconFrame:Hide()
-			end
-
 			colorHex = GetClassColorHex(class)
 			enhancedName = db.enhancedName and colorHex..name.."|r" or name
 			enhancedLevel = format(db.hideLevelText and "%s" or levelTemplate, db.levelColor and GetLevelDiffColorHex(level)..level.."|r" or level).." "
@@ -481,8 +449,6 @@ function EFL:EnhanceFriends_SetButton(button, index, firstButton)
 			nameText = enhancedName..(db.enhancedName and " - " or ", ")..enhancedLevel..enhancedClass
 
 			nameColor = db.enhancedName and (db.colorizeNameOnly and HIGHLIGHT_FONT_COLOR or HexToRGB(colorHex)) or FRIENDS_WOW_NAME_COLOR
-
-			Cooperate = true
 		else
 			button.status:SetTexture(StatusIcons[db.statusIcons].Offline)
 
@@ -515,7 +481,46 @@ function EFL:EnhanceFriends_SetButton(button, index, firstButton)
 			button.name:SetTextColor(nameColor.r, nameColor.g, nameColor.b)
 			button.info:SetText(infoText)
 			button.info:SetTextColor(0.49, 0.52, 0.54)
-			if Cooperate then
+
+			if (db.classIcon and connected) or (not connected and db.offlineClassIcon) then
+				if not button.iconFrame then
+					button.iconFrame = CreateFrame("Frame", "$parentIconFrame", button)
+					button.iconFrame:Size(26)
+					button.iconFrame:SetTemplate("Default")
+
+					button.iconFrame.texture = button.iconFrame:CreateTexture()
+					button.iconFrame.texture:SetAllPoints()
+					button.iconFrame.texture:SetTexture("Interface\\WorldStateFrame\\Icons-Classes")
+				end
+
+				button.name:ClearAllPoints()
+
+				local classFileName = localizedTable[class]
+				if classFileName then
+					button.iconFrame:Show()
+					if db.showStatusIcon then
+						button.iconFrame:Point("LEFT", 22, 0)
+					else
+						button.iconFrame:Point("LEFT", 3, 0)
+					end
+
+					button.name:Point("LEFT", button.iconFrame, "RIGHT", 3, 7)
+
+					button.iconFrame.texture:SetTexCoord(unpack(CLASS_ICON_TCOORDS[classFileName]))
+					button.iconFrame:SetAlpha(connected and 1 or 0.6)
+				else
+					button.iconFrame:Hide()
+					if db.showStatusIcon then
+						button.name:Point("TOPLEFT", 22, -3)
+					else
+						button.name:Point("TOPLEFT", 3, -3)
+					end
+				end
+			elseif button.iconFrame and button.iconFrame:IsShown() then
+				button.iconFrame:Hide()
+			end
+
+			if connected then
 				local playerZone = GetRealZoneText()
 
 				if db.enhancedZone then
