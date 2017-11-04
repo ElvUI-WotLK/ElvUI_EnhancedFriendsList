@@ -99,7 +99,7 @@ function EFL:InsertOptions()
 				type = "group",
 				name = L["General"],
 				get = function(info) return E.db.enhanceFriendsList[ info[#info] ] end,
-				set = function(info, value) E.db.enhanceFriendsList[ info[#info] ] = value; FriendsList_Update(); FriendsFrameStatusDropDown_Update() end,
+				set = function(info, value) E.db.enhanceFriendsList[ info[#info] ] = value; EFL:Update(); FriendsList_Update(); FriendsFrameStatusDropDown_Update() end,
 				args = {
 					showBackground = {
 						order = 1,
@@ -127,7 +127,7 @@ function EFL:InsertOptions()
 						name = L["Name Font"],
 						guiInline = true,
 						get = function(info) return E.db.enhanceFriendsList[ info[#info] ] end,
-						set = function(info, value) E.db.enhanceFriendsList[ info[#info] ] = value; FriendsList_Update() end,
+						set = function(info, value) E.db.enhanceFriendsList[ info[#info] ] = value; EFL:Update(); FriendsList_Update() end,
 						args = {
 							nameFont = {
 								order = 1,
@@ -161,7 +161,7 @@ function EFL:InsertOptions()
 						name = L["Zone Font"],
 						guiInline = true,
 						get = function(info) return E.db.enhanceFriendsList[ info[#info] ] end,
-						set = function(info, value) E.db.enhanceFriendsList[ info[#info] ] = value; FriendsList_Update() end,
+						set = function(info, value) E.db.enhanceFriendsList[ info[#info] ] = value; EFL:Update(); FriendsList_Update() end,
 						args = {
 							zoneFont = {
 								order = 1,
@@ -196,7 +196,7 @@ function EFL:InsertOptions()
 				type = "group",
 				name = L["Online Friends"],
 				get = function(info) return E.db.enhanceFriendsList[ info[#info] ] end,
-				set = function(info, value) E.db.enhanceFriendsList[ info[#info] ] = value; FriendsList_Update() end,
+				set = function(info, value) E.db.enhanceFriendsList[ info[#info] ] = value; EFL:Update(); FriendsList_Update() end,
 				args = {
 					enhancedName = {
 						order = 1,
@@ -286,7 +286,7 @@ function EFL:InsertOptions()
 				type = "group",
 				name = L["Offline Friends"],
 				get = function(info) return E.db.enhanceFriendsList[ info[#info] ] end,
-				set = function(info, value) E.db.enhanceFriendsList[ info[#info] ] = value; FriendsList_Update() end,
+				set = function(info, value) E.db.enhanceFriendsList[ info[#info] ] = value; EFL:Update(); FriendsList_Update() end,
 				args = {
 					offlineEnhancedName = {
 						order = 1,
@@ -400,6 +400,31 @@ local function HexToRGB(hex)
 	return {r = tonumber(rhex, 16)/225, g = tonumber(ghex, 16)/225, b = tonumber(bhex, 16)/225}
 end
 
+function EFL:Update()
+	for i = 1, #FriendsFrameFriendsScrollFrame.buttons do
+		local button = FriendsFrameFriendsScrollFrame.buttons[i]
+		if E.db.enhanceFriendsList.showBackground then
+			button.backgroundLeft:Show()
+			button.backgroundRight:Show()
+		else
+			button.backgroundLeft:Hide()
+			button.backgroundRight:Hide()
+		end
+
+		button.name:ClearAllPoints()
+		if E.db.enhanceFriendsList.showStatusIcon then
+			button.name:Point("TOPLEFT", 22, -3)
+			button.status:Show()
+		else
+			button.status:Hide()
+			button.name:Point("TOPLEFT", 3, -3)
+		end
+
+		button.name:SetFont(LSM:Fetch("font", E.db.enhanceFriendsList.nameFont), E.db.enhanceFriendsList.nameFontSize, E.db.enhanceFriendsList.nameFontOutline)
+		button.info:SetFont(LSM:Fetch("font", E.db.enhanceFriendsList.zoneFont), E.db.enhanceFriendsList.zoneFontSize, E.db.enhanceFriendsList.zoneFontOutline)
+	end
+end
+
 function EFL:EnhanceFriends_SetButton(button, index, firstButton)
 	local db = E.db.enhanceFriendsList
 	local levelTemplate = db.shortLevel and L["SHORT_LEVEL_TEMPLATE"] or L["LEVEL_TEMPLATE"]
@@ -410,27 +435,24 @@ function EFL:EnhanceFriends_SetButton(button, index, firstButton)
 		if not name then return end
 
 		local enhancedName, enhancedLevel, enhancedClass
-		local colorHex, nameText, nameColor, infoText
-
-		if db.showBackground then
-			button.background:Show()
-		else
-			button.background:Hide()
-		end
-
-		button.name:ClearAllPoints()
-		if db.showStatusIcon then
-			button.name:Point("TOPLEFT", 22, -3)
-			button.status:Show()
-		else
-			button.status:Hide()
-			button.name:Point("TOPLEFT", 3, -3)
-		end
+		local colorHex, nameText, nameColor, infoText, backgroundColor
 
 		infoText = area
 
 		if connected then
+			if status == "" then
+				button.highlightLeft:SetGradientAlpha("Horizontal", 0.243,0.570,1,0.35, 0.243,0.570,1,0)
+				button.highlightRight:SetGradientAlpha("Horizontal", 0.243,0.570,1,0, 0.243,0.570,1,0.35)
+			elseif status == CHAT_FLAG_AFK then
+				button.highlightLeft:SetGradientAlpha("Horizontal", 1,1,0,0.35, 1,1,0,0)
+				button.highlightRight:SetGradientAlpha("Horizontal", 1,1,0,0, 1,1,0,0.35)
+			elseif status == CHAT_FLAG_DND then
+				button.highlightLeft:SetGradientAlpha("Horizontal", 1,0,0,0.35, 1,0,0,0)
+				button.highlightRight:SetGradientAlpha("Horizontal", 1,0,0,0, 1,0,0,0.35)
+			end
 			button.status:SetTexture(StatusIcons[db.statusIcons][(status == CHAT_FLAG_DND and "DND" or status == CHAT_FLAG_AFK and "AFK" or "Online")])
+
+			backgroundColor = FRIENDS_WOW_BACKGROUND_COLOR
 
 			if not ElvCharacterDB.EnhancedFriendsList_Data[name] then
 				ElvCharacterDB.EnhancedFriendsList_Data[name] = {}
@@ -451,6 +473,8 @@ function EFL:EnhanceFriends_SetButton(button, index, firstButton)
 			nameColor = db.enhancedName and (db.colorizeNameOnly and HIGHLIGHT_FONT_COLOR or HexToRGB(colorHex)) or FRIENDS_WOW_NAME_COLOR
 		else
 			button.status:SetTexture(StatusIcons[db.statusIcons].Offline)
+
+			backgroundColor = FRIENDS_OFFLINE_BACKGROUND_COLOR
 
 			if ElvCharacterDB.EnhancedFriendsList_Data[name] then
 				local lastSeen = ElvCharacterDB.EnhancedFriendsList_Data[name].lastSeen
@@ -482,22 +506,16 @@ function EFL:EnhanceFriends_SetButton(button, index, firstButton)
 			button.info:SetText(infoText)
 			button.info:SetTextColor(0.49, 0.52, 0.54)
 
+			button.backgroundLeft:SetGradientAlpha("Horizontal", backgroundColor.r,backgroundColor.g,backgroundColor.b,backgroundColor.a, backgroundColor.r,backgroundColor.g,backgroundColor.b,0)
+			button.backgroundRight:SetGradientAlpha("Horizontal", backgroundColor.r,backgroundColor.g,backgroundColor.b,0,backgroundColor.r,backgroundColor.g,backgroundColor.b,backgroundColor.a)
+
 			if (db.classIcon and connected) or (not connected and db.offlineClassIcon) then
-				if not button.iconFrame then
-					button.iconFrame = CreateFrame("Frame", "$parentIconFrame", button)
-					button.iconFrame:Size(26)
-					button.iconFrame:SetTemplate("Default")
-
-					button.iconFrame.texture = button.iconFrame:CreateTexture()
-					button.iconFrame.texture:SetAllPoints()
-					button.iconFrame.texture:SetTexture("Interface\\WorldStateFrame\\Icons-Classes")
-				end
-
 				button.name:ClearAllPoints()
 
 				local classFileName = localizedTable[class]
 				if classFileName then
 					button.iconFrame:Show()
+
 					if db.showStatusIcon then
 						button.iconFrame:Point("LEFT", 22, 0)
 					else
@@ -516,19 +534,16 @@ function EFL:EnhanceFriends_SetButton(button, index, firstButton)
 						button.name:Point("TOPLEFT", 3, -3)
 					end
 				end
-			elseif button.iconFrame and button.iconFrame:IsShown() then
+			elseif button.iconFrame:IsShown() then
 				button.iconFrame:Hide()
+				if db.showStatusIcon then
+					button.name:Point("TOPLEFT", 22, -3)
+				else
+					button.name:Point("TOPLEFT", 3, -3)
+				end
 			end
 
 			if connected then
-				if status == "" then
-					button.highlight:SetVertexColor(0.243, 0.570, 1, 1);
-				elseif status == CHAT_FLAG_AFK then
-					button.highlight:SetVertexColor(1, 1, 0, 0.8);
-				elseif status == CHAT_FLAG_DND then
-					button.highlight:SetVertexColor(1, 0, 0, 0.8);
-				end
-
 				local playerZone = GetRealZoneText()
 
 				if db.enhancedZone then
@@ -553,8 +568,6 @@ function EFL:EnhanceFriends_SetButton(button, index, firstButton)
 					end
 				end
 			end
-			button.name:SetFont(LSM:Fetch("font", db.nameFont), db.nameFontSize, db.nameFontOutline)
-			button.info:SetFont(LSM:Fetch("font", db.zoneFont), db.zoneFontSize, db.zoneFontOutline)
 		end
 	end
 end
@@ -568,6 +581,52 @@ function EFL:FriendListUpdate()
 	if not ElvCharacterDB.EnhancedFriendsList_Data then
 		ElvCharacterDB.EnhancedFriendsList_Data = {}
 	end
+
+	for i = 1, #FriendsFrameFriendsScrollFrame.buttons do
+		local button = FriendsFrameFriendsScrollFrame.buttons[i]
+		button.iconFrame = CreateFrame("Frame", "$parentIconFrame", button)
+		button.iconFrame:Size(26)
+		button.iconFrame:SetTemplate("Default")
+
+		button.iconFrame.texture = button.iconFrame:CreateTexture()
+		button.iconFrame.texture:SetAllPoints()
+		button.iconFrame.texture:SetTexture("Interface\\WorldStateFrame\\Icons-Classes")
+		button.iconFrame:Hide()
+	
+		button.backgroundLeft = button:CreateTexture(nil, "BACKGROUND")
+		button.backgroundLeft:SetWidth(button:GetWidth() / 2)
+		button.backgroundLeft:SetHeight(32)
+		button.backgroundLeft:SetPoint("LEFT", button, "CENTER")
+		button.backgroundLeft:SetTexture(E.media.blankTex)
+		button.backgroundLeft:SetGradientAlpha("Horizontal", FRIENDS_WOW_BACKGROUND_COLOR.r, FRIENDS_WOW_BACKGROUND_COLOR.g, FRIENDS_WOW_BACKGROUND_COLOR.b,0.35, FRIENDS_WOW_BACKGROUND_COLOR.r, FRIENDS_WOW_BACKGROUND_COLOR.g, FRIENDS_WOW_BACKGROUND_COLOR.b,0)
+
+		button.backgroundRight = button:CreateTexture(nil, "BACKGROUND")
+		button.backgroundRight:SetWidth(button:GetWidth() / 2)
+		button.backgroundRight:SetHeight(32)
+		button.backgroundRight:SetPoint("RIGHT", button, "CENTER")
+		button.backgroundRight:SetTexture(E.media.blankTex)
+		button.backgroundRight:SetGradientAlpha("Horizontal", FRIENDS_WOW_BACKGROUND_COLOR.r, FRIENDS_WOW_BACKGROUND_COLOR.g, FRIENDS_WOW_BACKGROUND_COLOR.b,0, FRIENDS_WOW_BACKGROUND_COLOR.r, FRIENDS_WOW_BACKGROUND_COLOR.g, FRIENDS_WOW_BACKGROUND_COLOR.b,0.35)
+
+		button.background:Hide()
+
+		button.highlightLeft = button:CreateTexture(nil, "Highlight")
+		button.highlightLeft:SetWidth(button:GetWidth() / 2)
+		button.highlightLeft:SetHeight(34)
+		button.highlightLeft:SetPoint("LEFT", button, "CENTER")
+		button.highlightLeft:SetTexture(E.media.blankTex)
+		button.highlightLeft:SetGradientAlpha("Horizontal", 0.243,0.570,1,0.35, 0.243,0.570,1,0)
+
+		button.highlightRight = button:CreateTexture(nil, "Highlight")
+		button.highlightRight:SetWidth(button:GetWidth() / 2)
+		button.highlightRight:SetHeight(34)
+		button.highlightRight:SetPoint("RIGHT", button, "CENTER")
+		button.highlightRight:SetTexture(E.media.blankTex)
+		button.highlightRight:SetGradientAlpha("Horizontal", 0.243,0.570,1,0, 0.243,0.570,1,0.35)
+
+		button.highlight:SetVertexColor(0, 0, 0, 0)
+	end
+
+	self:Update()
 
 	self:SecureHook("FriendsFrameStatusDropDown_Update")
 	self:SecureHook(FriendsFrameFriendsScrollFrame, "buttonFunc", "EnhanceFriends_SetButton")
