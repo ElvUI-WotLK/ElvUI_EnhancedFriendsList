@@ -521,6 +521,14 @@ function EFL:EnhanceFriends_SetButton(button, index, firstButton)
 			end
 
 			if connected then
+				if status == "" then
+					button.highlight:SetVertexColor(0.243, 0.570, 1, 1);
+				elseif status == CHAT_FLAG_AFK then
+					button.highlight:SetVertexColor(1, 1, 0, 0.8);
+				elseif status == CHAT_FLAG_DND then
+					button.highlight:SetVertexColor(1, 0, 0, 0.8);
+				end
+
 				local playerZone = GetRealZoneText()
 
 				if db.enhancedZone then
