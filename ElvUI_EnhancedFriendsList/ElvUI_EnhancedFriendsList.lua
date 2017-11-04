@@ -612,10 +612,6 @@ function EFL:Construct_Highlight(button)
 end
 
 function EFL:EnhanceFriends_SetButton(button, index, firstButton)
-	local db = E.db.enhanceFriendsList
-	local levelTemplate = db.shortLevel and L["SHORT_LEVEL_TEMPLATE"] or L["LEVEL_TEMPLATE"]
-	local offlineLevelTemplate = db.offlineShortLevel and L["SHORT_LEVEL_TEMPLATE"] or L["LEVEL_TEMPLATE"]
-
 	if button.buttonType == FRIENDS_BUTTON_TYPE_WOW then
 		local name, level, class, area, connected, status = GetFriendInfo(button.id)
 		if not name then return end
