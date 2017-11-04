@@ -1,6 +1,6 @@
 ﻿## Interface: 30300
 ## Author: Apollyon
-## Version: 1.05
+## Version: 1.06
 ## Title: |cffA11313E|r|cffC4C4C4lvUI|r |cffA11313E|r|cffC4C4C4nhanced|r |cffA11313F|r|cffC4C4C4riends|r |cffA11313L|r|cffC4C4C4ist|r
 ## RequiredDeps: ElvUI
 
