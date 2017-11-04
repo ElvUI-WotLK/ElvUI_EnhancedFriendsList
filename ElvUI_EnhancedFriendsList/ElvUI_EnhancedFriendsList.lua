@@ -58,7 +58,7 @@ P["enhanceFriendsList"] = {
 		["colorizeNameOnly"] = false,
 		["enhancedZone"] = false,
 		["enhancedZoneColor"] = {r = 1, g = 0.96, b = 0.45},
-		["classText"] = false,
+		["classText"] = true,
 		["level"] = true,
 		["levelColor"] = false,
 		["levelText"] = false,
@@ -70,14 +70,14 @@ P["enhanceFriendsList"] = {
 	["Offline"] = {
 		["enhancedName"] = false,
 		["colorizeNameOnly"] = false,
-		["classText"] = true,
-		["level"] = true,
+		["classText"] = false,
+		["level"] = false,
 		["levelColor"] = false,
 		["levelText"] = false,
 		["shortLevel"] = false,
 		["zoneText"] = true,
 		["lastSeen"] = true,
-		["classIcon"] = true,
+		["classIcon"] = false,
 	}
 }
 
@@ -444,8 +444,8 @@ function EFL:Update_Name(button)
 
 	local enhancedName = (self.db[button.TYPE].enhancedName and GetClassColorHex(button.class, isOffline)..button.nameText.."|r" or button.nameText)
 	local enhancedLevel = self.db[button.TYPE].level and format(self.db[button.TYPE].levelText and "%s" or self.db[button.TYPE].shortLevel and L["SHORT_LEVEL_TEMPLATE"] or L["LEVEL_TEMPLATE"], self.db[button.TYPE].levelColor and GetLevelDiffColorHex(button.levelText, isOffline)..button.levelText.."|r" or button.levelText).." " or ""
-	local enhancedClass = self.db[button.TYPE].classText and "" or button.class
-	button.name:SetText(enhancedName..(self.db[button.TYPE].enhancedName and " - " or ", ")..enhancedLevel..enhancedClass)
+	local enhancedClass = self.db[button.TYPE].classText and button.class or ""
+	button.name:SetText(enhancedName..((self.db[button.TYPE].level or self.db[button.TYPE].classText) and (self.db[button.TYPE].enhancedName and " - " or ", ") or "")..enhancedLevel..enhancedClass)
 
 	local nameColor = self.db[button.TYPE].enhancedName and (self.db[button.TYPE].colorizeNameOnly and (isOffline and FRIENDS_GRAY_COLOR or HIGHLIGHT_FONT_COLOR) or HexToRGB(GetClassColorHex(button.class, isOffline))) or (isOffline and FRIENDS_GRAY_COLOR or FRIENDS_WOW_NAME_COLOR)
 	button.name:SetTextColor(nameColor.r, nameColor.g, nameColor.b)
@@ -486,6 +486,8 @@ function EFL:Update_Name(button)
 			end
 		end
 	end
+
+	button.info:SetText(infoText)
 
 	button.name:ClearAllPoints()
 	if button.iconFrame:IsShown() then
