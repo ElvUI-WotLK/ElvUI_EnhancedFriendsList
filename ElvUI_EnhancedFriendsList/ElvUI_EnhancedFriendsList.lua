@@ -7,11 +7,9 @@ local addonName = ...
 local pairs, ipairs = pairs, ipairs
 local format = format
 
-local IsChatAFK = IsChatAFK
-local IsChatDND = IsChatDND
 local GetFriendInfo = GetFriendInfo
 local GetQuestDifficultyColor = GetQuestDifficultyColor
-local LEVEL = LEVEL
+local CLASS_ICON_TCOORDS = CLASS_ICON_TCOORDS
 local FRIENDS_BUTTON_TYPE_WOW = FRIENDS_BUTTON_TYPE_WOW
 local LOCALIZED_CLASS_NAMES_FEMALE = LOCALIZED_CLASS_NAMES_FEMALE
 local LOCALIZED_CLASS_NAMES_MALE = LOCALIZED_CLASS_NAMES_MALE
@@ -37,8 +35,6 @@ local StatusIcons = {
 		AFK = "Interface\\AddOns\\ElvUI_EnhancedFriendsList\\Media\\Textures\\D3\\AFK"
 	}
 }
-
-local Locale = GetLocale()
 
 -- Profile
 P["enhanceFriendsList"] = {
@@ -611,7 +607,7 @@ function EFL:Construct_Highlight(button)
 	button.highlightRight:SetGradientAlpha("Horizontal", 0.243,0.570,1,0, 0.243,0.570,1,0.35)
 end
 
-function EFL:EnhanceFriends_SetButton(button, index, firstButton)
+function EFL:EnhanceFriends_SetButton(button)
 	if button.buttonType == FRIENDS_BUTTON_TYPE_WOW then
 		local name, level, class, area, connected, status = GetFriendInfo(button.id)
 		if not name then return end
