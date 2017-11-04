@@ -210,8 +210,7 @@ function EFL:InsertOptions()
 					colorizeNameOnly = {
 						order = 2,
 						type = "toggle",
-						name = L["Colorize Name Only"],
-						disabled = function() return not E.db.enhanceFriendsList.enhancedName end
+						name = L["Colorize Name Only"]
 					},
 					classText = {
 						order = 3,
