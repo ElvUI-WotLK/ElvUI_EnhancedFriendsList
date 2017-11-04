@@ -403,13 +403,8 @@ end
 function EFL:Update()
 	for i = 1, #FriendsFrameFriendsScrollFrame.buttons do
 		local button = FriendsFrameFriendsScrollFrame.buttons[i]
-		if E.db.enhanceFriendsList.showBackground then
-			button.backgroundLeft:Show()
-			button.backgroundRight:Show()
-		else
-			button.backgroundLeft:Hide()
-			button.backgroundRight:Hide()
-		end
+
+		self:Configure_Background(button)
 
 		button.name:ClearAllPoints()
 		if E.db.enhanceFriendsList.showStatusIcon then
@@ -425,6 +420,124 @@ function EFL:Update()
 	end
 end
 
+-- IconFrame
+function EFL:Update_IconFrame(button, class, connected)
+	if (E.db.enhanceFriendsList.classIcon and connected) or (not connected and E.db.enhanceFriendsList.offlineClassIcon) then
+		button.name:ClearAllPoints()
+
+		local classFileName = localizedTable[class]
+		if classFileName then
+			button.iconFrame:Show()
+
+			if E.db.enhanceFriendsList.showStatusIcon then
+				button.iconFrame:Point("LEFT", 22, 0)
+			else
+				button.iconFrame:Point("LEFT", 3, 0)
+			end
+
+			button.name:Point("LEFT", button.iconFrame, "RIGHT", 3, 7)
+
+			button.iconFrame.texture:SetTexCoord(unpack(CLASS_ICON_TCOORDS[classFileName]))
+			button.iconFrame:SetAlpha(connected and 1 or 0.6)
+		else
+			button.iconFrame:Hide()
+			if E.db.enhanceFriendsList.showStatusIcon then
+				button.name:Point("TOPLEFT", 22, -3)
+			else
+				button.name:Point("TOPLEFT", 3, -3)
+			end
+		end
+	elseif button.iconFrame:IsShown() then
+		button.iconFrame:Hide()
+		if E.db.enhanceFriendsList.showStatusIcon then
+			button.name:Point("TOPLEFT", 22, -3)
+		else
+			button.name:Point("TOPLEFT", 3, -3)
+		end
+	end
+end
+
+function EFL:Construct_IconFrame(button)
+	button.iconFrame = CreateFrame("Frame", "$parentIconFrame", button)
+	button.iconFrame:Size(26)
+	button.iconFrame:SetTemplate("Default")
+
+	button.iconFrame.texture = button.iconFrame:CreateTexture()
+	button.iconFrame.texture:SetAllPoints()
+	button.iconFrame.texture:SetTexture("Interface\\WorldStateFrame\\Icons-Classes")
+	button.iconFrame:Hide()
+end
+
+-- Background
+function EFL:Update_Background(button, connected)
+	if not E.db.enhanceFriendsList.showBackground then return end
+
+	if button.buttonType == FRIENDS_BUTTON_TYPE_WOW then
+		if connected then
+			button.backgroundLeft:SetGradientAlpha("Horizontal", 1,0.824,0,0.05, 1,0.824,0,0)
+			button.backgroundRight:SetGradientAlpha("Horizontal", 1,0.824,0,0, 1,0.824,0,0.05)
+		else
+			button.backgroundLeft:SetGradientAlpha("Horizontal", 0.588,0.588,0.588,0.05, 0.588,0.588,0.588,0)
+			button.backgroundRight:SetGradientAlpha("Horizontal", 0.588,0.588,0.588,0, 0.588,0.588,0.588,0.05)
+		end
+	end
+end
+
+function EFL:Configure_Background(button)
+	if E.db.enhanceFriendsList.showBackground then
+		button.backgroundLeft:Show()
+		button.backgroundRight:Show()
+	else
+		button.backgroundLeft:Hide()
+		button.backgroundRight:Hide()
+	end
+end
+
+function EFL:Construct_Background(button)
+	button.backgroundLeft = button:CreateTexture(nil, "BACKGROUND")
+	button.backgroundLeft:SetWidth(button:GetWidth() / 2)
+	button.backgroundLeft:SetHeight(32)
+	button.backgroundLeft:SetPoint("LEFT", button, "CENTER")
+	button.backgroundLeft:SetTexture(E.media.blankTex)
+	button.backgroundLeft:SetGradientAlpha("Horizontal", 1,0.824,0.0,0.05, 1,0.824,0.0,0)
+
+	button.backgroundRight = button:CreateTexture(nil, "BACKGROUND")
+	button.backgroundRight:SetWidth(button:GetWidth() / 2)
+	button.backgroundRight:SetHeight(32)
+	button.backgroundRight:SetPoint("RIGHT", button, "CENTER")
+	button.backgroundRight:SetTexture(E.media.blankTex)
+	button.backgroundRight:SetGradientAlpha("Horizontal", 1,0.824,0.0,0, 1,0.824,0.0,0.05)
+end
+
+-- Highlight
+function EFL:Update_Highlight(button, connected, status)
+	if not connected then return end
+
+	if status == CHAT_FLAG_AFK then
+		button.highlightLeft:SetGradientAlpha("Horizontal", 1,1,0,0.35, 1,1,0,0)
+		button.highlightRight:SetGradientAlpha("Horizontal", 1,1,0,0, 1,1,0,0.35)
+	elseif status == CHAT_FLAG_DND then
+		button.highlightLeft:SetGradientAlpha("Horizontal", 1,0,0,0.35, 1,0,0,0)
+		button.highlightRight:SetGradientAlpha("Horizontal", 1,0,0,0, 1,0,0,0.35)
+	end
+end
+
+function EFL:Construct_Highlight(button)
+	button.highlightLeft = button:CreateTexture(nil, "HIGHLIGHT")
+	button.highlightLeft:SetWidth(button:GetWidth() / 2)
+	button.highlightLeft:SetHeight(34)
+	button.highlightLeft:SetPoint("LEFT", button, "CENTER")
+	button.highlightLeft:SetTexture(E.media.blankTex)
+	button.highlightLeft:SetGradientAlpha("Horizontal", 0.243,0.570,1,0.35, 0.243,0.570,1,0)
+
+	button.highlightRight = button:CreateTexture(nil, "HIGHLIGHT")
+	button.highlightRight:SetWidth(button:GetWidth() / 2)
+	button.highlightRight:SetHeight(34)
+	button.highlightRight:SetPoint("RIGHT", button, "CENTER")
+	button.highlightRight:SetTexture(E.media.blankTex)
+	button.highlightRight:SetGradientAlpha("Horizontal", 0.243,0.570,1,0, 0.243,0.570,1,0.35)
+end
+
 function EFL:EnhanceFriends_SetButton(button, index, firstButton)
 	local db = E.db.enhanceFriendsList
 	local levelTemplate = db.shortLevel and L["SHORT_LEVEL_TEMPLATE"] or L["LEVEL_TEMPLATE"]
@@ -435,24 +548,12 @@ function EFL:EnhanceFriends_SetButton(button, index, firstButton)
 		if not name then return end
 
 		local enhancedName, enhancedLevel, enhancedClass
-		local colorHex, nameText, nameColor, infoText, backgroundColor
+		local colorHex, nameText, nameColor, infoText
 
 		infoText = area
 
 		if connected then
-			if status == "" then
-				button.highlightLeft:SetGradientAlpha("Horizontal", 0.243,0.570,1,0.35, 0.243,0.570,1,0)
-				button.highlightRight:SetGradientAlpha("Horizontal", 0.243,0.570,1,0, 0.243,0.570,1,0.35)
-			elseif status == CHAT_FLAG_AFK then
-				button.highlightLeft:SetGradientAlpha("Horizontal", 1,1,0,0.35, 1,1,0,0)
-				button.highlightRight:SetGradientAlpha("Horizontal", 1,1,0,0, 1,1,0,0.35)
-			elseif status == CHAT_FLAG_DND then
-				button.highlightLeft:SetGradientAlpha("Horizontal", 1,0,0,0.35, 1,0,0,0)
-				button.highlightRight:SetGradientAlpha("Horizontal", 1,0,0,0, 1,0,0,0.35)
-			end
 			button.status:SetTexture(StatusIcons[db.statusIcons][(status == CHAT_FLAG_DND and "DND" or status == CHAT_FLAG_AFK and "AFK" or "Online")])
-
-			backgroundColor = FRIENDS_WOW_BACKGROUND_COLOR
 
 			if not ElvCharacterDB.EnhancedFriendsList_Data[name] then
 				ElvCharacterDB.EnhancedFriendsList_Data[name] = {}
@@ -473,8 +574,6 @@ function EFL:EnhanceFriends_SetButton(button, index, firstButton)
 			nameColor = db.enhancedName and (db.colorizeNameOnly and HIGHLIGHT_FONT_COLOR or HexToRGB(colorHex)) or FRIENDS_WOW_NAME_COLOR
 		else
 			button.status:SetTexture(StatusIcons[db.statusIcons].Offline)
-
-			backgroundColor = FRIENDS_OFFLINE_BACKGROUND_COLOR
 
 			if ElvCharacterDB.EnhancedFriendsList_Data[name] then
 				local lastSeen = ElvCharacterDB.EnhancedFriendsList_Data[name].lastSeen
@@ -506,43 +605,6 @@ function EFL:EnhanceFriends_SetButton(button, index, firstButton)
 			button.info:SetText(infoText)
 			button.info:SetTextColor(0.49, 0.52, 0.54)
 
-			button.backgroundLeft:SetGradientAlpha("Horizontal", backgroundColor.r,backgroundColor.g,backgroundColor.b,backgroundColor.a, backgroundColor.r,backgroundColor.g,backgroundColor.b,0)
-			button.backgroundRight:SetGradientAlpha("Horizontal", backgroundColor.r,backgroundColor.g,backgroundColor.b,0,backgroundColor.r,backgroundColor.g,backgroundColor.b,backgroundColor.a)
-
-			if (db.classIcon and connected) or (not connected and db.offlineClassIcon) then
-				button.name:ClearAllPoints()
-
-				local classFileName = localizedTable[class]
-				if classFileName then
-					button.iconFrame:Show()
-
-					if db.showStatusIcon then
-						button.iconFrame:Point("LEFT", 22, 0)
-					else
-						button.iconFrame:Point("LEFT", 3, 0)
-					end
-
-					button.name:Point("LEFT", button.iconFrame, "RIGHT", 3, 7)
-
-					button.iconFrame.texture:SetTexCoord(unpack(CLASS_ICON_TCOORDS[classFileName]))
-					button.iconFrame:SetAlpha(connected and 1 or 0.6)
-				else
-					button.iconFrame:Hide()
-					if db.showStatusIcon then
-						button.name:Point("TOPLEFT", 22, -3)
-					else
-						button.name:Point("TOPLEFT", 3, -3)
-					end
-				end
-			elseif button.iconFrame:IsShown() then
-				button.iconFrame:Hide()
-				if db.showStatusIcon then
-					button.name:Point("TOPLEFT", 22, -3)
-				else
-					button.name:Point("TOPLEFT", 3, -3)
-				end
-			end
-
 			if connected then
 				local playerZone = GetRealZoneText()
 
@@ -569,6 +631,12 @@ function EFL:EnhanceFriends_SetButton(button, index, firstButton)
 				end
 			end
 		end
+
+		self:Update_IconFrame(button, class, connected)
+
+		self:Update_Background(button, connected)
+
+		self:Update_Highlight(button, connected, status)
 	end
 end
 
@@ -584,45 +652,13 @@ function EFL:FriendListUpdate()
 
 	for i = 1, #FriendsFrameFriendsScrollFrame.buttons do
 		local button = FriendsFrameFriendsScrollFrame.buttons[i]
-		button.iconFrame = CreateFrame("Frame", "$parentIconFrame", button)
-		button.iconFrame:Size(26)
-		button.iconFrame:SetTemplate("Default")
 
-		button.iconFrame.texture = button.iconFrame:CreateTexture()
-		button.iconFrame.texture:SetAllPoints()
-		button.iconFrame.texture:SetTexture("Interface\\WorldStateFrame\\Icons-Classes")
-		button.iconFrame:Hide()
-	
-		button.backgroundLeft = button:CreateTexture(nil, "BACKGROUND")
-		button.backgroundLeft:SetWidth(button:GetWidth() / 2)
-		button.backgroundLeft:SetHeight(32)
-		button.backgroundLeft:SetPoint("LEFT", button, "CENTER")
-		button.backgroundLeft:SetTexture(E.media.blankTex)
-		button.backgroundLeft:SetGradientAlpha("Horizontal", FRIENDS_WOW_BACKGROUND_COLOR.r, FRIENDS_WOW_BACKGROUND_COLOR.g, FRIENDS_WOW_BACKGROUND_COLOR.b,0.35, FRIENDS_WOW_BACKGROUND_COLOR.r, FRIENDS_WOW_BACKGROUND_COLOR.g, FRIENDS_WOW_BACKGROUND_COLOR.b,0)
+		self:Construct_IconFrame(button)
 
-		button.backgroundRight = button:CreateTexture(nil, "BACKGROUND")
-		button.backgroundRight:SetWidth(button:GetWidth() / 2)
-		button.backgroundRight:SetHeight(32)
-		button.backgroundRight:SetPoint("RIGHT", button, "CENTER")
-		button.backgroundRight:SetTexture(E.media.blankTex)
-		button.backgroundRight:SetGradientAlpha("Horizontal", FRIENDS_WOW_BACKGROUND_COLOR.r, FRIENDS_WOW_BACKGROUND_COLOR.g, FRIENDS_WOW_BACKGROUND_COLOR.b,0, FRIENDS_WOW_BACKGROUND_COLOR.r, FRIENDS_WOW_BACKGROUND_COLOR.g, FRIENDS_WOW_BACKGROUND_COLOR.b,0.35)
-
+		self:Construct_Background(button)
 		button.background:Hide()
 
-		button.highlightLeft = button:CreateTexture(nil, "Highlight")
-		button.highlightLeft:SetWidth(button:GetWidth() / 2)
-		button.highlightLeft:SetHeight(34)
-		button.highlightLeft:SetPoint("LEFT", button, "CENTER")
-		button.highlightLeft:SetTexture(E.media.blankTex)
-		button.highlightLeft:SetGradientAlpha("Horizontal", 0.243,0.570,1,0.35, 0.243,0.570,1,0)
-
-		button.highlightRight = button:CreateTexture(nil, "Highlight")
-		button.highlightRight:SetWidth(button:GetWidth() / 2)
-		button.highlightRight:SetHeight(34)
-		button.highlightRight:SetPoint("RIGHT", button, "CENTER")
-		button.highlightRight:SetTexture(E.media.blankTex)
-		button.highlightRight:SetGradientAlpha("Horizontal", 0.243,0.570,1,0, 0.243,0.570,1,0.35)
-
+		self:Construct_Highlight(button)
 		button.highlight:SetVertexColor(0, 0, 0, 0)
 	end
 
