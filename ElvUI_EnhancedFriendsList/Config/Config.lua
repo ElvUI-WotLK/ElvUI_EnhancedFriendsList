@@ -246,7 +246,7 @@ function EFL:InsertOptions()
 					levelText = {
 						order = 6,
 						type = "toggle",
-						name = L["Hide Level Text"],
+						name = L["Level Text"],
 						desc = L["Hides the 'Level' or 'L' text."],
 						disabled = function() return not E.db.enhanceFriendsList.Offline.level end
 					},

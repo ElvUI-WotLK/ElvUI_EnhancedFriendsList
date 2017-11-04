@@ -57,7 +57,7 @@ local function GetLevelDiffColorHex(level, offline)
 		local color = GetQuestDifficultyColor(level)
 		return offline and format("|cFF%02x%02x%02x", color.r*160, color.g*160, color.b*160) or format("|cFF%02x%02x%02x", color.r*255, color.g*255, color.b*255)
 	else
-		return offline and "|cFFAFAFAF" or "|cFFFFFFFF"
+		return offline and E:RGBToHex(0.49, 0.52, 0.54) or "|cFFFFFFFF"
 	end
 end
 
@@ -77,7 +77,7 @@ local function GetClassColorHex(class, offline)
 	if color then
 		return offline and format("|cff%02x%02x%02x", color.r*160, color.g*160, color.b*160) or format("|cff%02x%02x%02x", color.r*255, color.g*255, color.b*255)
 	else
-		return offline and "|cFFAFAFAF" or "|cFFFFFFFF"
+		return offline and E:RGBToHex(0.49, 0.52, 0.54) or "|cFFFFFFFF"
 	end
 end
 
