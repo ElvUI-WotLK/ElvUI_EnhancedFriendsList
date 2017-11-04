@@ -406,17 +406,30 @@ function EFL:Update()
 
 		self:Configure_Background(button)
 
-		button.name:ClearAllPoints()
 		if E.db.enhanceFriendsList.showStatusIcon then
-			button.name:Point("TOPLEFT", 22, -3)
 			button.status:Show()
 		else
 			button.status:Hide()
-			button.name:Point("TOPLEFT", 3, -3)
 		end
+
+		self:Configure_IconFrame(button)
 
 		button.name:SetFont(LSM:Fetch("font", E.db.enhanceFriendsList.nameFont), E.db.enhanceFriendsList.nameFontSize, E.db.enhanceFriendsList.nameFontOutline)
 		button.info:SetFont(LSM:Fetch("font", E.db.enhanceFriendsList.zoneFont), E.db.enhanceFriendsList.zoneFontSize, E.db.enhanceFriendsList.zoneFontOutline)
+	end
+end
+
+-- Name
+function EFL:Update_Name(button)
+	button.name:ClearAllPoints()
+	if button.iconFrame:IsShown() then
+		button.name:Point("LEFT", button.iconFrame, "RIGHT", 3, 7)
+	else
+		if E.db.enhanceFriendsList.showStatusIcon then
+			button.name:Point("TOPLEFT", 22, -3)
+		else
+			button.name:Point("TOPLEFT", 3, -3)
+		end
 	end
 end
 
@@ -429,31 +442,24 @@ function EFL:Update_IconFrame(button, class, connected)
 		if classFileName then
 			button.iconFrame:Show()
 
-			if E.db.enhanceFriendsList.showStatusIcon then
-				button.iconFrame:Point("LEFT", 22, 0)
-			else
-				button.iconFrame:Point("LEFT", 3, 0)
-			end
-
-			button.name:Point("LEFT", button.iconFrame, "RIGHT", 3, 7)
-
 			button.iconFrame.texture:SetTexCoord(unpack(CLASS_ICON_TCOORDS[classFileName]))
 			button.iconFrame:SetAlpha(connected and 1 or 0.6)
 		else
 			button.iconFrame:Hide()
-			if E.db.enhanceFriendsList.showStatusIcon then
-				button.name:Point("TOPLEFT", 22, -3)
-			else
-				button.name:Point("TOPLEFT", 3, -3)
-			end
 		end
 	elseif button.iconFrame:IsShown() then
 		button.iconFrame:Hide()
-		if E.db.enhanceFriendsList.showStatusIcon then
-			button.name:Point("TOPLEFT", 22, -3)
-		else
-			button.name:Point("TOPLEFT", 3, -3)
-		end
+	end
+
+	self:Update_Name(button)
+end
+
+function EFL:Configure_IconFrame(button)
+	button.iconFrame:ClearAllPoints()
+	if E.db.enhanceFriendsList.showStatusIcon then
+		button.iconFrame:Point("LEFT", 22, 0)
+	else
+		button.iconFrame:Point("LEFT", 3, 0)
 	end
 end
 
@@ -472,14 +478,12 @@ end
 function EFL:Update_Background(button, connected)
 	if not E.db.enhanceFriendsList.showBackground then return end
 
-	if button.buttonType == FRIENDS_BUTTON_TYPE_WOW then
-		if connected then
-			button.backgroundLeft:SetGradientAlpha("Horizontal", 1,0.824,0,0.05, 1,0.824,0,0)
-			button.backgroundRight:SetGradientAlpha("Horizontal", 1,0.824,0,0, 1,0.824,0,0.05)
-		else
-			button.backgroundLeft:SetGradientAlpha("Horizontal", 0.588,0.588,0.588,0.05, 0.588,0.588,0.588,0)
-			button.backgroundRight:SetGradientAlpha("Horizontal", 0.588,0.588,0.588,0, 0.588,0.588,0.588,0.05)
-		end
+	if connected then
+		button.backgroundLeft:SetGradientAlpha("Horizontal", 1,0.824,0,0.05, 1,0.824,0,0)
+		button.backgroundRight:SetGradientAlpha("Horizontal", 1,0.824,0,0, 1,0.824,0,0.05)
+	else
+		button.backgroundLeft:SetGradientAlpha("Horizontal", 0.588,0.588,0.588,0.05, 0.588,0.588,0.588,0)
+		button.backgroundRight:SetGradientAlpha("Horizontal", 0.588,0.588,0.588,0, 0.588,0.588,0.588,0.05)
 	end
 end
 
@@ -632,9 +636,11 @@ function EFL:EnhanceFriends_SetButton(button, index, firstButton)
 			end
 		end
 
+		self:Update_Background(button, connected)
+
 		self:Update_IconFrame(button, class, connected)
 
-		self:Update_Background(button, connected)
+		self:Update_Name(button)
 
 		self:Update_Highlight(button, connected, status)
 	end
