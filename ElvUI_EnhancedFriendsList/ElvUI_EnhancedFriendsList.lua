@@ -146,7 +146,7 @@ function EFL:Update_Name(button)
 
 		button.info:SetTextColor(0.49, 0.52, 0.54)
 	else
-		infoText = button.area
+		infoText = self.db[button.TYPE].zoneText and button.area or ""
 
 		local playerZone = GetRealZoneText()
 		if self.db[button.TYPE].enhancedZone then

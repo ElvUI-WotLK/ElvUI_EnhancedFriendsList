@@ -202,13 +202,24 @@ function EFL:InsertOptions()
 						name = L["Zone"],
 						guiInline = true,
 						args = {
-							enhancedZone = {
+							zoneText = {
 								order = 1,
 								type = "toggle",
-								name = L["Enhanced Zone"]
+								name = L["Zone Text"]
+							},
+							spacer = {
+								order = 2,
+								type = "description",
+								name = ""
+							},
+							enhancedZone = {
+								order = 3,
+								type = "toggle",
+								name = L["Enhanced Zone"],
+								disabled = function() return not E.db.enhanceFriendsList.Online.zoneText end
 							},
 							enhancedZoneColor = {
-								order = 2,
+								order = 4,
 								type = "color",
 								name = L["Enhanced Zone Color"],
 								get = function(info)
@@ -221,20 +232,22 @@ function EFL:InsertOptions()
 									t.r, t.g, t.b = r, g, b
 									FriendsList_Update()
 								end,
+								disabled = function() return not E.db.enhanceFriendsList.Online.zoneText end
 							},
-							spacer = {
-								order = 3,
+							spacer2 = {
+								order = 5,
 								type = "description",
 								name = "",
 							},
 							sameZone = {
-								order = 4,
+								order = 6,
 								type = "toggle",
 								name = L["Same Zone"],
-								desc = L["Friends that are in the same area as you, have their zone info colorized green."]
+								desc = L["Friends that are in the same area as you, have their zone info colorized green."],
+								disabled = function() return not E.db.enhanceFriendsList.Online.zoneText end
 							},
 							sameZoneColor = {
-								order = 5,
+								order = 7,
 								type = "color",
 								name = L["Same Zone Color"],
 								get = function(info)
@@ -246,7 +259,8 @@ function EFL:InsertOptions()
 									local t = E.db.enhanceFriendsList.Online.sameZoneColor
 									t.r, t.g, t.b = r, g, b
 									FriendsList_Update()
-								end
+								end,
+								disabled = function() return not E.db.enhanceFriendsList.Online.zoneText end
 							}
 						}
 					}
