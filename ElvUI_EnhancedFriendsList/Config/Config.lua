@@ -232,7 +232,7 @@ function EFL:InsertOptions()
 									t.r, t.g, t.b = r, g, b
 									FriendsList_Update()
 								end,
-								disabled = function() return not E.db.enhanceFriendsList.Online.zoneText end
+								disabled = function() return not E.db.enhanceFriendsList.Online.zoneText or not E.db.enhanceFriendsList.Online.enhancedZone end
 							},
 							spacer2 = {
 								order = 5,
@@ -260,7 +260,7 @@ function EFL:InsertOptions()
 									t.r, t.g, t.b = r, g, b
 									FriendsList_Update()
 								end,
-								disabled = function() return not E.db.enhanceFriendsList.Online.zoneText end
+								disabled = function() return not E.db.enhanceFriendsList.Online.zoneText or not E.db.enhanceFriendsList.Online.sameZone end
 							}
 						}
 					}
