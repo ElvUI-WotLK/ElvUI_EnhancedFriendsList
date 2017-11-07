@@ -206,6 +206,12 @@ function EFL:InsertOptions()
 						order = 12,
 						type = "toggle",
 						name = L["Class Icon"]
+					},
+					classIconStatusColor = {
+						order = 13,
+						type = "toggle",
+						name = L["Class Icon Status Color"],
+						disabled = function() return not E.db.enhanceFriendsList.Online.classIcon end
 					}
 				}
 			},

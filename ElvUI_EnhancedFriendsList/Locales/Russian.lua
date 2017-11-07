@@ -7,6 +7,7 @@ L["LEVEL_TEMPLATE"] = "%s-го уровня";
 L["SHORT_LEVEL_TEMPLATE"] = "%s-го ур.";
 
 L["Class Icon"] = "Иконка класса";
+L["Class Icon Status Color"] = true;
 L["Class Text"] = "Текст класса";
 L["Colorize Name Only"] = true;
 L["Enhanced Friends List"] = true;

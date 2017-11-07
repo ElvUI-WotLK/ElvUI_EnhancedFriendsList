@@ -26,6 +26,7 @@ P["enhanceFriendsList"] = {
 		["sameZone"] = false,
 		["sameZoneColor"] = {r = 0.3, g = 1.0, b = 0.3},
 		["classIcon"] = false,
+		["classIconStatusColor"] = false,
 	},
 	["Offline"] = {
 		["enhancedName"] = false,

@@ -7,6 +7,7 @@ L["LEVEL_TEMPLATE"] = "Level %s";
 L["SHORT_LEVEL_TEMPLATE"] = "L %s";
 
 L["Class Icon"] = true;
+L["Class Icon Status Color"] = true;
 L["Class Text"] = true;
 L["Colorize Name Only"] = true;
 L["Enhanced Friends List"] = true;
