@@ -141,7 +141,7 @@ function EFL:Update_Name(button)
 
 			infoText = (self.db[button.TYPE].zoneText and button.area..(self.db[button.TYPE].lastSeen and " - " or "") or "")..(self.db[button.TYPE].lastSeen and L["Last seen"].." "..RecentTimeDate(td.year, td.month, td.day, td.hour) or "")
 		else
-			infoText = button.area
+			infoText = self.db[button.TYPE].zoneText and button.area or ""
 		end
 
 		button.info:SetTextColor(0.49, 0.52, 0.54)
