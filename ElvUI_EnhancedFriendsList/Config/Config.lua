@@ -124,7 +124,7 @@ function EFL:InsertOptions()
 					name = {
 						order = 1,
 						type = "group",
-						name = L["Name"],
+						name = NAME,
 						guiInline = true,
 						args = {
 							enhancedName = {
@@ -143,7 +143,7 @@ function EFL:InsertOptions()
 					level = {
 						order = 2,
 						type = "group",
-						name = L["Level"],
+						name = LEVEL,
 						guiInline = true,
 						args = {
 							level = {
@@ -175,7 +175,7 @@ function EFL:InsertOptions()
 					class = {
 						order = 3,
 						type = "group",
-						name = L["Class"],
+						name = CLASS,
 						guiInline = true,
 						args = {
 							classText = {
@@ -199,7 +199,7 @@ function EFL:InsertOptions()
 					zone = {
 						order = 4,
 						type = "group",
-						name = L["Zone"],
+						name = ZONE,
 						guiInline = true,
 						args = {
 							zoneText = {
@@ -276,7 +276,7 @@ function EFL:InsertOptions()
 					name = {
 						order = 1,
 						type = "group",
-						name = L["Name"],
+						name = NAME,
 						guiInline = true,
 						args = {
 							enhancedName = {
@@ -295,7 +295,7 @@ function EFL:InsertOptions()
 					level = {
 						order = 2,
 						type = "group",
-						name = L["Level"],
+						name = LEVEL,
 						guiInline = true,
 						args = {
 							level = {
@@ -327,7 +327,7 @@ function EFL:InsertOptions()
 					class = {
 						order = 3,
 						type = "group",
-						name = L["Class"],
+						name = CLASS,
 						guiInline = true,
 						args = {
 							classText = {
@@ -345,7 +345,7 @@ function EFL:InsertOptions()
 					zone = {
 						order = 4,
 						type = "group",
-						name = L["Zone"],
+						name = ZONE,
 						guiInline = true,
 						args = {
 							zoneText = {
