@@ -36,22 +36,6 @@ local StatusIcons = {
 	}
 }
 
-local function timeDiff(t2, t1)
-	if t2 < t1 then return end
-
-	local d1, d2, carry, diff = date("*t", t1), date("*t", t2), false, {}
-	local colMax = {60, 60, 24, date("*t", time{year = d1.year,month = d1.month + 1, day = 0}).day, 12}
-
-	d2.hour = d2.hour - (d2.isdst and 1 or 0) + (d1.isdst and 1 or 0)
-	for i, v in ipairs({"sec", "min", "hour", "day", "month", "year"}) do
-		diff[v] = d2[v] - d1[v] + (carry and -1 or 0)
-		carry = diff[v] < 0
-		if carry then diff[v] = diff[v] + colMax[i] end
-	end
-
-	return diff
-end
-
 local function GetLevelDiffColorHex(level, offline)
 	if level ~= 0 then
 		local color = GetQuestDifficultyColor(level)
@@ -128,18 +112,16 @@ function EFL:Update_Name(button)
 	local isOffline = button.TYPE == "Offline" or false
 
 	local enhancedName = (self.db[button.TYPE].enhancedName and GetClassColorHex(button.class, isOffline)..button.nameText.."|r" or button.nameText)
-	local enhancedLevel = self.db[button.TYPE].level and format(self.db[button.TYPE].levelText and (self.db[button.TYPE].shortLevel and L["SHORT_LEVEL_TEMPLATE"] or L["LEVEL_TEMPLATE"]) or "%s", self.db[button.TYPE].levelColor and GetLevelDiffColorHex(button.levelText, isOffline)..button.levelText.."|r" or button.levelText).." " or ""
+	local enhancedLevel = self.db[button.TYPE].level and button.levelText and format(self.db[button.TYPE].levelText and (self.db[button.TYPE].shortLevel and L["SHORT_LEVEL_TEMPLATE"] or L["LEVEL_TEMPLATE"]) or "%s", self.db[button.TYPE].levelColor and GetLevelDiffColorHex(button.levelText, isOffline)..button.levelText.."|r" or button.levelText).." " or ""
 	local enhancedClass = self.db[button.TYPE].classText and button.class or ""
-	button.name:SetText(enhancedName..((self.db[button.TYPE].level or self.db[button.TYPE].classText) and (self.db[button.TYPE].enhancedName and " - " or ", ") or "")..enhancedLevel..enhancedClass)
+	button.name:SetText(enhancedName..((enhancedLevel ~= "" or enhancedClass ~= "") and (self.db[button.TYPE].enhancedName and " - " or ", ") or "")..enhancedLevel..enhancedClass)
 
 	local nameColor = self.db[button.TYPE].enhancedName and (self.db[button.TYPE].colorizeNameOnly and (isOffline and FRIENDS_GRAY_COLOR or HIGHLIGHT_FONT_COLOR) or HexToRGB(GetClassColorHex(button.class, isOffline))) or (isOffline and FRIENDS_GRAY_COLOR or FRIENDS_WOW_NAME_COLOR)
 	button.name:SetTextColor(nameColor.r, nameColor.g, nameColor.b)
 
 	if isOffline then
-		if ElvCharacterDB.EnhancedFriendsList_Data[button.nameText] then
-			local td = timeDiff(time(), tonumber(ElvCharacterDB.EnhancedFriendsList_Data[button.nameText].lastSeen))
-
-			infoText = (self.db[button.TYPE].zoneText and button.area..(self.db[button.TYPE].lastSeen and " - " or "") or "")..(self.db[button.TYPE].lastSeen and L["Last seen"].." "..RecentTimeDate(td.year, td.month, td.day, td.hour) or "")
+		if button.lastSeen then
+			infoText = (self.db[button.TYPE].zoneText and button.area and button.area..(self.db[button.TYPE].lastSeen and " - " or "") or "")..(self.db[button.TYPE].lastSeen and L["Last seen"].." "..FriendsFrame_GetLastOnline(button.lastSeen) or "")
 		else
 			infoText = self.db[button.TYPE].zoneText and button.area or ""
 		end
@@ -313,6 +295,15 @@ function EFL:Construct_Highlight(button)
 	button.highlightRight:SetGradientAlpha("Horizontal", 0.243,0.570,1,0, 0.243,0.570,1,0.35)
 end
 
+function EFL:GetLocalFriendInfo(name)
+	local info = EnhancedFriendsListDB[E.myrealm][name]
+	if info then
+		return info[1], info[2], info[3], info[4]
+	else
+		return nil, nil, nil, nil
+	end
+end
+
 function EFL:EnhanceFriends_SetButton(button)
 	if button.buttonType == FRIENDS_BUTTON_TYPE_WOW then
 		local name, level, class, area, connected, status = GetFriendInfo(button.id)
@@ -323,20 +314,15 @@ function EFL:EnhanceFriends_SetButton(button)
 		button.statusType = status
 
 		if connected then
-			if not ElvCharacterDB.EnhancedFriendsList_Data[name] then
-				ElvCharacterDB.EnhancedFriendsList_Data[name] = {}
+			if not EnhancedFriendsListDB[E.myrealm][name] then
+				EnhancedFriendsListDB[E.myrealm][name] = {}
 			end
 
-			ElvCharacterDB.EnhancedFriendsList_Data[name].level = level
-			ElvCharacterDB.EnhancedFriendsList_Data[name].class = class
-			ElvCharacterDB.EnhancedFriendsList_Data[name].area = area
-			ElvCharacterDB.EnhancedFriendsList_Data[name].lastSeen = format("%i", time())
+			EnhancedFriendsListDB[E.myrealm][name] = {level, class, area, format("%i", time())}
 		else
-			if ElvCharacterDB.EnhancedFriendsList_Data[name] then
-				level = ElvCharacterDB.EnhancedFriendsList_Data[name].level
-				class = ElvCharacterDB.EnhancedFriendsList_Data[name].class
-				area = ElvCharacterDB.EnhancedFriendsList_Data[name].area
-			end
+			local lastSeen
+			level, class, area, lastSeen = self:GetLocalFriendInfo(name)
+			button.lastSeen = lastSeen
 		end
 
 		button.levelText = level
@@ -359,8 +345,19 @@ end
 function EFL:FriendListUpdate()
 	self.db = E.db.enhanceFriendsList
 
-	if not ElvCharacterDB.EnhancedFriendsList_Data then
-		ElvCharacterDB.EnhancedFriendsList_Data = {}
+	if ElvCharacterDB.EnhancedFriendsList_Data then
+		for i = 1, GetNumFriends() do
+			local name, level, class, area, connected, status = GetFriendInfo(i)
+			if ElvCharacterDB.EnhancedFriendsList_Data[name] then
+				local data = ElvCharacterDB.EnhancedFriendsList_Data[name]
+				local nameWithRealm = name.." - "..E.myrealm
+				if not EnhancedFriendsListDB[E.myrealm][name] then
+					EnhancedFriendsListDB[E.myrealm][name] = {}
+				end
+				EnhancedFriendsListDB[E.myrealm][name] = {data.level, data.class, data.area, data.lastSeen}
+			end
+		end
+		ElvCharacterDB.EnhancedFriendsList_Data = nil
 	end
 
 	for i = 1, #FriendsFrameFriendsScrollFrame.buttons do
@@ -383,6 +380,14 @@ end
 
 function EFL:Initialize()
 	EP:RegisterPlugin(addonName, self.InsertOptions)
+
+	if not EnhancedFriendsListDB then
+		EnhancedFriendsListDB = {}
+	end
+
+	if not EnhancedFriendsListDB[E.myrealm] then
+		EnhancedFriendsListDB[E.myrealm] = {}
+	end
 
 	self:FriendListUpdate()
 end
