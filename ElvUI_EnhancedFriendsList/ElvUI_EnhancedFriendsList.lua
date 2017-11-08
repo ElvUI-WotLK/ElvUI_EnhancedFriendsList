@@ -77,9 +77,7 @@ function EFL:Update()
 		local button = FriendsFrameFriendsScrollFrame.buttons[i]
 
 		self:Configure_Background(button)
-
 		self:Configure_Status(button)
-
 		self:Configure_IconFrame(button)
 
 		button.name:SetFont(LSM:Fetch("font", E.db.enhanceFriendsList.nameFont), E.db.enhanceFriendsList.nameFontSize, E.db.enhanceFriendsList.nameFontOutline)
@@ -108,7 +106,6 @@ end
 
 -- Name
 function EFL:Update_Name(button)
-	local infoText
 	local isOffline = button.TYPE == "Offline" or false
 
 	local enhancedName = (self.db[button.TYPE].enhancedName and GetClassColorHex(button.class, isOffline)..button.nameText.."|r" or button.nameText)
@@ -119,6 +116,7 @@ function EFL:Update_Name(button)
 	local nameColor = self.db[button.TYPE].enhancedName and (self.db[button.TYPE].colorizeNameOnly and (isOffline and FRIENDS_GRAY_COLOR or HIGHLIGHT_FONT_COLOR) or HexToRGB(GetClassColorHex(button.class, isOffline))) or (isOffline and FRIENDS_GRAY_COLOR or FRIENDS_WOW_NAME_COLOR)
 	button.name:SetTextColor(nameColor.r, nameColor.g, nameColor.b)
 
+	local infoText
 	if isOffline then
 		if button.lastSeen then
 			infoText = (self.db[button.TYPE].zoneText and button.area and button.area..(self.db[button.TYPE].lastSeen and " - " or "") or "")..(self.db[button.TYPE].lastSeen and L["Last seen"].." "..FriendsFrame_GetLastOnline(button.lastSeen) or "")
@@ -153,17 +151,16 @@ function EFL:Update_Name(button)
 			end
 		end
 	end
-
 	button.info:SetText(infoText)
 
 	button.name:ClearAllPoints()
 	if button.iconFrame:IsShown() then
-		button.name:Point("LEFT", button.iconFrame, "RIGHT", 3, 7)
+		button.name:Point("LEFT", button.iconFrame, "RIGHT", 3, infoText ~= "" and 7 or 0)
 	else
 		if E.db.enhanceFriendsList.showStatusIcon then
-			button.name:Point("TOPLEFT", 22, -3)
+			button.name:Point("TOPLEFT", 22, infoText ~= "" and -3 or -10)
 		else
-			button.name:Point("TOPLEFT", 3, -3)
+			button.name:Point("TOPLEFT", 3, infoText ~= "" and -3 or -10)
 		end
 	end
 end
@@ -320,8 +317,9 @@ function EFL:EnhanceFriends_SetButton(button)
 
 			EnhancedFriendsListDB[E.myrealm][name] = {level, class, area, format("%i", time())}
 		else
-			local lastSeen
-			level, class, area, lastSeen = self:GetLocalFriendInfo(name)
+			local lastSeen, lastArea
+			level, class, lastArea, lastSeen = self:GetLocalFriendInfo(name)
+			area = lastArea or area
 			button.lastSeen = lastSeen
 		end
 
@@ -350,7 +348,6 @@ function EFL:FriendListUpdate()
 			local name, level, class, area, connected, status = GetFriendInfo(i)
 			if ElvCharacterDB.EnhancedFriendsList_Data[name] then
 				local data = ElvCharacterDB.EnhancedFriendsList_Data[name]
-				local nameWithRealm = name.." - "..E.myrealm
 				if not EnhancedFriendsListDB[E.myrealm][name] then
 					EnhancedFriendsListDB[E.myrealm][name] = {}
 				end
