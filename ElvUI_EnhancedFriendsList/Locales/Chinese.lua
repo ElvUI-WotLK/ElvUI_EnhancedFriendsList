@@ -15,7 +15,6 @@ L["Enhanced Name"] = true;
 L["Enhanced Zone Color"] = true;
 L["Enhanced Zone"] = true;
 L["Friends that are in the same area as you, have their zone info colorized green."] = true;
-L["Hides the 'Level' or 'L' text."] = true;
 L["Last Seen"] = true;
 L["Last seen"] = true;
 L["Level Range Color"] = true;

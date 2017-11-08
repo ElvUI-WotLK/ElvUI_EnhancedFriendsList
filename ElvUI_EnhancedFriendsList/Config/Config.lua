@@ -39,7 +39,7 @@ function EFL:InsertOptions()
 						type = "select",
 						name = L["Status Icons Textures"],
 						values = {
-							["Default"] = "Default",
+							["Default"] = L["Default"],
 							["Square"] = "Square",
 							["D3"] = "Diablo 3"
 						}
@@ -161,7 +161,6 @@ function EFL:InsertOptions()
 								order = 3,
 								type = "toggle",
 								name = L["Level Text"],
-								desc = L["Hides the 'Level' or 'L' text."],
 								disabled = function() return not E.db.enhanceFriendsList.Online.level end
 							},
 							shortLevel = {
