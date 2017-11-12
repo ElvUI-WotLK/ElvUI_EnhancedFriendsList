@@ -178,14 +178,22 @@ function EFL:Update_IconFrame(button)
 			if E.db.enhanceFriendsList.Online.classIconStatusColor then
 				if button.TYPE == "Online" then
 					if button.statusType == "" then
-						button.iconFrame:SetBackdropBorderColor(0, 0, 0)
+						if E.PixelMode then
+							button.iconFrame:SetBackdropBorderColor(0, 0, 0, 1)
+						else
+							button.iconFrame:SetBackdropBorderColor(0, 0, 0, 0)
+						end
 					elseif button.statusType == CHAT_FLAG_AFK then
 						button.iconFrame:SetBackdropBorderColor(1, 1, 0)
 					elseif button.statusType == CHAT_FLAG_DND then
 						button.iconFrame:SetBackdropBorderColor(1, 0, 0)
 					end
 				else
-					button.iconFrame:SetBackdropBorderColor(0, 0, 0)
+					if E.PixelMode then
+						button.iconFrame:SetBackdropBorderColor(0, 0, 0, 1)
+					else
+						button.iconFrame:SetBackdropBorderColor(0, 0, 0, 0)
+					end
 				end
 			else
 				button.iconFrame:SetBackdropBorderColor(unpack(E["media"].bordercolor))

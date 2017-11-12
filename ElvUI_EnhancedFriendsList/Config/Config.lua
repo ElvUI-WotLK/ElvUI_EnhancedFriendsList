@@ -24,6 +24,11 @@ function EFL:InsertOptions()
 				get = function(info) return E.db.enhanceFriendsList[ info[#info] ] end,
 				set = function(info, value) E.db.enhanceFriendsList[ info[#info] ] = value; EFL:Update(); FriendsList_Update(); FriendsFrameStatusDropDown_Update() end,
 				args = {
+					header = {
+						order = 0,
+						type = "header",
+						name = L["General"],
+					},
 					showBackground = {
 						order = 1,
 						type = "toggle",
@@ -121,6 +126,11 @@ function EFL:InsertOptions()
 				get = function(info) return E.db.enhanceFriendsList.Online[ info[#info] ] end,
 				set = function(info, value) E.db.enhanceFriendsList.Online[ info[#info] ] = value; EFL:Update(); FriendsList_Update() end,
 				args = {
+					header = {
+						order = 0,
+						type = "header",
+						name = L["Online Friends"]
+					},
 					name = {
 						order = 1,
 						type = "group",
@@ -272,6 +282,11 @@ function EFL:InsertOptions()
 				get = function(info) return E.db.enhanceFriendsList.Offline[ info[#info] ] end,
 				set = function(info, value) E.db.enhanceFriendsList.Offline[ info[#info] ] = value; EFL:Update(); FriendsList_Update() end,
 				args = {
+					header = {
+						order = 0,
+						type = "header",
+						name = L["Offline Friends"]
+					},
 					name = {
 						order = 1,
 						type = "group",
