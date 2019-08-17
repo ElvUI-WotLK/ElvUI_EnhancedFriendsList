@@ -1,7 +1,7 @@
 ﻿## Interface: 30300
 ## Author: Apollyon, Bunny
 ## Version: 1.09
-## Title: |cffA11313E|r|cffC4C4C4lvUI|r |cffA11313E|r|cffC4C4C4nhanced|r |cffA11313F|r|cffC4C4C4riends|r |cffA11313L|r|cffC4C4C4ist|r
+## Title: |cff1784d1E|r|cffe5e3e3lvUI|r |cff1784d1E|r|cffe5e3e3nhanced|r |cff1784d1F|r|cffe5e3e3riends|r |cff1784d1L|r|cffe5e3e3ist|r
 ## SavedVariables: EnhancedFriendsListDB
 ## RequiredDeps: ElvUI
 

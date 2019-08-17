@@ -1,5 +1,5 @@
 -- German localization file for deDE.
-local AceLocale = LibStub:GetLibrary("AceLocale-3.0")
+local AceLocale = LibStub:GetLibrary("AceLocale-3.0-ElvUI")
 local L = AceLocale:NewLocale("ElvUI", "deDE")
 if not L then return end
 
